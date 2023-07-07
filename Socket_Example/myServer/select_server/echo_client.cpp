@@ -62,8 +62,14 @@ void  Client::sendData()
 }
 
 void  Client::receiveResult(){
-  read(sockfd, buff, BUFF_SIZE);
-  std::cout <<"FROM SERVER : " <<buff << "\n";
+  int len = read(sockfd, buff, BUFF_SIZE);
+  if (len == 0)
+    return ;
+  else
+  {
+    buff[len ] = '\0';
+    std::cout <<"FROM SERVER : " <<buff << "\n";
+  }
 }
 
 void Client::closeConnect(){
@@ -82,8 +88,11 @@ int main(int argc, char *argv[])
     s1.initServAdr(argv[1], argv[2]);
     s1.make_sock();
     s1.Connet_with_server();
-    s1.sendData();
-    s1.receiveResult();
+    while (1)
+    {
+      s1.sendData();
+      s1.receiveResult();
+    }
     s1.closeConnect();
   }
   catch(std::exception &e){

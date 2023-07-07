@@ -44,9 +44,8 @@ class selectServ
 
     //이벤트 처리 인자들
     fd_set read_fd_set;
-    fd_set write_fd_set;
-    fd_set except_fd_set;
-    timeval time_out;//select timeout
+    fd_set copy_fd_set;
+    struct timeval time_out;//select timeout
 
     //입출력 스트림 분리
     // FILE *read;
@@ -62,13 +61,15 @@ void  selectServ::sockInit(char* port){
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   serv_addr.sin_port = htons(std::atoi(port));
   serv_addr.sin_family = AF_INET;
+
   serv_addrsz = sizeof(serv_addr);
-  fd_max = 0;
+  fd_max = serv_sockfd;
   FD_ZERO(&read_fd_set);
+  FD_SET(serv_sockfd, &read_fd_set);
 }
 
 void  selectServ::sockBind() {
-  if (bind(serv_sockfd, (sockaddr *)&serv_addr, serv_addrsz) == -1)
+  if (bind(serv_sockfd, (struct sockaddr *)&serv_addr,sizeof(serv_addr)) == -1)
     throw(std::runtime_error("BIND() ERROR"));
 }
 
@@ -86,24 +87,26 @@ void   selectServ::sockAccept(){
   FD_SET(clnt_sockfd, &read_fd_set);
   if (fd_max < clnt_sockfd)
     fd_max = clnt_sockfd;
+  std::cout << "Connected Client : " << clnt_sockfd << "\n";
 }
 
 void  selectServ::selectDetectEvent(){
 
   time_out.tv_sec = 5;
   time_out.tv_usec =5000;
-  fd_set tmp = read_fd_set;
-  int fd_num = select(fd_max+1, &tmp, 0,0, &time_out);
+  copy_fd_set = read_fd_set;
+  int fd_num = select(fd_max+1, &copy_fd_set, 0,0, &time_out);
   if (fd_num == -1)
     throw(std::runtime_error("SELECT() ERROR!"));
   if (fd_num == 0)//timeout
   {
+    // std::cout << "FD_MAX" << fd_max << "\n";
     std::cout << "TimeOut!! Waiting...\n";
     return ;
   }
   for(int i=0; i <fd_max + 1;i++)
   {
-    if (FD_ISSET(i, &tmp))
+    if (FD_ISSET(i, &copy_fd_set))
     {
       if (i == serv_sockfd) //connection request
         sockAccept();
@@ -137,9 +140,10 @@ int main(int argc, char**argv)
     s1.sockInit(argv[1]);
     s1.sockBind();
     s1.sockListen();
+    // s1.sockAccept();
     while (1)
     {
-      s1.sockAccept();
+      s1.selectDetectEvent();
     }
   }
   catch(std::exception &e){
