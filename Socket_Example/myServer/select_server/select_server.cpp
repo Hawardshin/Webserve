@@ -16,9 +16,18 @@
 // 4. accept하기
 // 5. select 함수로 이벤트 등록하기
 //클라이언트 숫자를 몇명까지 하는게 맞는걸까?
-#define BUFF_SIZE 500
+//애당초 숫자를 지정하지 않는건가?
 class selectServ
 {
+  public :
+    static const int BUFF_SIZE = 500;
+    ~selectServ();
+    void  sockInit(char* port);
+    void  sockBind();
+    void  sockListen();
+    void  sockAccept();
+
+    void  selectDetectEvent();
   private :
     char buff[BUFF_SIZE];
     //서버 소켓
@@ -27,9 +36,6 @@ class selectServ
     socklen_t serv_addrsz;
 
     //클라이언트 소켓
-    // int clnt_sockfd[CLNT_MAX_SIZE];
-    // struct sockaddr_in clnt_addr[CLNT_MAX_SIZE];
-    // socklen_t clnt_addrsz[CLNT_MAX_SIZE];
     int clnt_sockfd;
     struct sockaddr_in clnt_addr;
     socklen_t clnt_addrsz;
@@ -45,14 +51,6 @@ class selectServ
     //입출력 스트림 분리
     // FILE *read;
     // FILE *write;
-  public :
-    void  sockInit(char* port);
-    void  sockBind();
-    void  sockListen();
-    void  sockAccept();
-
-    void  selectDetectEvent();
-    ~selectServ();
 };
 
 void  selectServ::sockInit(char* port){
@@ -81,15 +79,6 @@ void  selectServ::sockListen(){
 
 //resgister to fd_set variable
 void   selectServ::sockAccept(){
-  // if (connected_clnt_num == CLNT_MAX_SIZE) // 일단 이렇게
-  //   return ;
-  // clnt_addrsz[connected_clnt_num] = sizeof(clnt_addr[connected_clnt_num]);
-  // clnt_sockfd[connected_clnt_num] = accept(serv_sockfd, (struct sockaddr *) &clnt_addr, &clnt_addrsz[connected_clnt_num]);
-
-  // if (clnt_sockfd[connected_clnt_num] == -1)
-  //   throw(std::runtime_error("ACCEPT() ERROR"));
-  // connected_clnt_num++;
-
   clnt_addrsz = sizeof(clnt_addr);
   clnt_sockfd = accept(serv_sockfd, (struct sockaddr *) &clnt_addr, &clnt_addrsz);
   if (clnt_sockfd == -1)
