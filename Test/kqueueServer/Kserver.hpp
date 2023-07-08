@@ -3,19 +3,45 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <iostream>
 #include <cstdio>
 
-//1.
+
+/**
+ * @brief kqueue using echo server
+ *
+ */
 class Kserver{
   public :
-    Kserver();
+    static const int BUFF_SIZE = 500;
+
+    Kserver(char *port);
     ~Kserver();
-    int sock_fd;
-    struct sockaddr_in serv_addr;
-    struct sockaddr_in cln_addr;
+    void  Server_init();
 
   private:
+    Kserver();
+    void  sockInit();
+    void  sockBind();
+    void  sockListen();
+    void  sockAccept();
+
+    char buff_[BUFF_SIZE];
+    int port_;
+
+    //server socket
+    int serv_sockfd_;
+    struct sockaddr_in serv_addr_;
+    socklen_t serv_addrsz_;
+
+    //client socket
+    int clnt_sockfd_;
+    struct sockaddr_in clnt_addr_;
+    socklen_t clnt_addrsz_;
+
+    //접속해있는 클라이언트 숫자.
+    int clnt_num_;
 };
