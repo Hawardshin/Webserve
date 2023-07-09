@@ -8,6 +8,7 @@ int main(int argc, char **argv)
       throw(std::invalid_argument("Only one ARGV for <port>"));
     Kserver serv(argv[1]);
     serv.Server_init();
+    serv.sockAccept();
   }
   catch(std::exception &e)
   {

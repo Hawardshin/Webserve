@@ -1,3 +1,5 @@
+#ifndef KSERVER_HPP
+# define KSERVER_HPP
 #include <sys/event.h>
 #include <sys/time.h>
 #include <sys/socket.h>
@@ -18,16 +20,16 @@ class Kserver{
   public :
     static const int BUFF_SIZE = 500;
 
-    Kserver(char *port);
+    explicit Kserver(char *port);
     ~Kserver();
     void  Server_init();
+    void  sockAccept();
 
   private:
     Kserver();
     void  sockInit();
     void  sockBind();
     void  sockListen();
-    void  sockAccept();
 
     char buff_[BUFF_SIZE];
     int port_;
@@ -45,3 +47,5 @@ class Kserver{
     //접속해있는 클라이언트 숫자.
     int clnt_num_;
 };
+
+#endif

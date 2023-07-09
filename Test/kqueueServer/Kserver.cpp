@@ -8,6 +8,7 @@
      * @warning 중복 포트 번호 사용시 꺼짐
 */
 Kserver::Kserver(char *port) {
+  port_ = 0;
   if (port == NULL)
     port_ = -1;
   int num = 0;
@@ -15,15 +16,19 @@ Kserver::Kserver(char *port) {
 
   for (i=0; port[i] != '\0';i++)
   {
+    num *= 10;
     if (!isdigit(port[i]))
     {
       port_ = -1;
       return ;
     }
-    num += (port[i]-'0') * 10;
+    num += (port[i]-'0');
   }
   if (i >= 10)
     port_ = -1;
+  else
+    port_ = num;
+  std::cout << "Port : " << port_ << "\n";
 }
 
 /**
@@ -45,6 +50,19 @@ void  Kserver::Server_init(){
   sockBind();
   sockListen();
 }
+/**
+ * @brief accept 함수 호출합니다. 호출된 clnt_sockfd에 accept된 fd가 있어서 그것들에 대한 처리가 필요합니다.
+ *
+ */
+void  Kserver::sockAccept(){
+
+  clnt_addrsz_ = sizeof(clnt_addr_);
+  clnt_sockfd_ = accept(serv_sockfd_, (struct sockaddr *) &clnt_addr_, &clnt_addrsz_);
+  if (clnt_sockfd_ == -1)
+    throw(std::runtime_error("ACCEPT() ERROR"));
+  std::cout << "Connected Client : " << clnt_sockfd_ << "\n";
+}
+
 /**
  * @brief use sock() to server socket
  * @warning if port is invalid throw invalid_argument
@@ -80,6 +98,4 @@ void  Kserver::sockListen(){
     throw(std::runtime_error("LISTEN() ERROR"));
 }
 
-void  Kserver::sockAccept(){
 
-}
