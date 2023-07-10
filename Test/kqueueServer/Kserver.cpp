@@ -50,9 +50,7 @@ void  Kserver::Server_init(){
   sockBind();
   sockListen();
 	kqueue_.KqueueStart(serv_sockfd_);//kqueue 시작
-	kqueue_.ChangeEvent(serv_sockfd,server_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL); );
-	//kqueue에 서버소켓 fd등록
-
+	kqueue_.ChangeEvent(serv_sockfd_, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);//kqueue에 서버소켓 readEvent 등록
 }
 /**
  * @brief accept 함수 호출합니다. 호출된 clnt_sockfd에 accept된 fd가 있어서 그것들에 대한 처리가 필요합니다.
@@ -66,6 +64,17 @@ void  Kserver::sockAccept(){
     throw(std::runtime_error("ACCEPT() ERROR"));
   std::cout << "Connected Client : " << clnt_sockfd_ << "\n";
 }
+
+
+ void  Kserver::startWorking()
+ {
+  while (1)
+  {
+    kqueue_.KqueueStart(serv_sockfd_);
+    event_list_size_ = kqueue_.detectEvent(event_list_);
+    handleEvents();
+  }
+ }
 
 /**
  * @brief use sock() to server socket
@@ -104,4 +113,75 @@ void  Kserver::sockListen(){
 	fcntl(serv_sockfd_, F_SETFL, O_NONBLOCK);
 }
 
+void  Kserver::handleEvents()
+{
+  struct kevent *cur_event;
+  for(int i=0;i < event_list_size_;i++)
+  {
+    cur_event = &event_list_[i];
+    if (cur_event->filter ==  EVFILT_READ)
+    {
+      if (cur_event->ident == serv_sockfd_)
+        registerNewClnt();
+      else//client-socket
+        clntSockReadable(cur_event);
+    }
+    else if (cur_event->filter == EVFILT_WRITE) //ONLY CLIENT
+    {
+      std::map<int, std::string>::iterator it = clnt_data_store_.find(cur_event->ident);
+      if (it != clnt_data_store_.end())
+      {
+          if (clnt_data_store_[cur_event->ident] != "")
+          {
+              int n = write(cur_event->ident, clnt_data_store_[cur_event->ident].c_str(),clnt_data_store_[cur_event->ident].size());
+              if (n == -1)
+              {
+                  std::cerr << "client write error!" << "\n";
+                  disconnectClient(cur_event->ident);
+              }
+              else
+                  clnt_data_store_[cur_event->ident].clear();
+          }
+      }
+    }
+    else
+      throw("THAT'S IMPOSSIBLE THIS IS CODE ERROR!!");
+  }
+}
 
+
+void  Kserver::registerNewClnt()
+{
+  clnt_addrsz_ = sizeof(clnt_addr_);
+  clnt_sockfd_ = accept(serv_sockfd_,  (struct sockaddr *) &clnt_addr_, &clnt_addrsz_);
+  if (clnt_sockfd_ == -1)
+    throw(std::runtime_error("ACCEPT() ERROR"));
+  std::cout << "Connected Client : " << clnt_sockfd_ << "\n";
+  fcntl(clnt_sockfd_, F_SETFL, O_NONBLOCK);
+  kqueue_.ChangeEvent(clnt_sockfd_, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);
+  kqueue_.ChangeEvent(clnt_sockfd_, EVFILT_WRITE, EV_ADD | EV_ENABLE, NULL);
+  clnt_data_store_[clnt_sockfd_] = "";
+}
+
+/**
+ * @brief client socket is in a readable state
+ *
+ */
+void  Kserver::clntSockReadable(struct kevent *cur_event)
+{
+  if (clnt_data_store_.find(cur_event->ident) == clnt_data_store_.end())
+    throw("INVALID CLIENT_SOCKET() (It's impossible)");
+  int rlen = read(cur_event->ident ,buff_, BUFF_SIZE);
+  if (rlen == -1)
+    throw(std::runtime_error("READ() ERROR!! IN CLNT_SOCK"));
+  buff_[rlen] = '\0';
+  clnt_data_store_[cur_event->ident] += buff_;
+  std::cout << "FROM CLIENT NUM " << cur_event->ident << ": " << clnt_data_store_[cur_event->ident] << "\n";
+}
+
+void  Kserver::disconnectClient(int clnt_fd)
+{
+  std::cout << "CLINET DISCONNECTED:: " << clnt_fd << "\n";
+  close(clnt_fd);
+  clnt_data_store_.erase(clnt_fd);
+}
