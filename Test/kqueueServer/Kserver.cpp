@@ -49,6 +49,10 @@ void  Kserver::Server_init(){
   sockInit();
   sockBind();
   sockListen();
+	kqueue_.KqueueStart(serv_sockfd_);//kqueue 시작
+	kqueue_.ChangeEvent(serv_sockfd,server_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL); );
+	//kqueue에 서버소켓 fd등록
+
 }
 /**
  * @brief accept 함수 호출합니다. 호출된 clnt_sockfd에 accept된 fd가 있어서 그것들에 대한 처리가 필요합니다.
@@ -91,11 +95,13 @@ void  Kserver::sockBind(){
 
 /**
  * @brief listen() 연결 요청 대기 큐 15개
+ * @note 여기서 서버 fd를 non-blocking으로 바꿔줍니다.
  *
  */
 void  Kserver::sockListen(){
   if (listen(serv_sockfd_, 15) == -1)
     throw(std::runtime_error("LISTEN() ERROR"));
+	fcntl(serv_sockfd_, F_SETFL, O_NONBLOCK);
 }
 
 

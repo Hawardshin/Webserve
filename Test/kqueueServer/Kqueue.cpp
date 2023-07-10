@@ -5,7 +5,6 @@ void  Kqueue::KqueueStart(const int &serv_sock)
   kqueue_fd_ = kqueue();
   if (kqueue_fd_ == -1)
     throw(std::runtime_error("kqueue() ERROR!!"));
-
 }
 
 /**
@@ -19,8 +18,9 @@ void  Kqueue::KqueueStart(const int &serv_sock)
  *  EV_DISABLE, EV_DELETE(이벤트 비활성화 삭제),
  *  EV_ONESHOT(설정된 이벤트를 한번만 알려준다)
  */
-void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata)
+void Kqueue::ChangeEvent(std::vector<struct kqueue>int ident, int filter, int flags, void * udata)
 {
-  EV_SET( &change_list_[changes_n_], ident, filter, flags, 0, 0, udata );
-  changes_n_++;
+	struct kevent tmp_event;
+  EV_SET(&tmp_evnet , ident, filter, flags, 0, 0, udata );
+	change_list.push_back(tmp_event);
 }

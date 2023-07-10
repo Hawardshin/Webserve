@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <cstdio>
-
+#include "kqueue.hpp"
 
 /**
  * @brief kqueue using echo server
@@ -31,6 +31,7 @@ class Kserver{
     void  sockBind();
     void  sockListen();
 
+		Kqueue kqueue_;
     char buff_[BUFF_SIZE];
     int port_;
 
