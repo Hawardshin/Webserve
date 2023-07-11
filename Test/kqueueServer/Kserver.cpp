@@ -198,6 +198,7 @@ void  Kserver::sockWriterable(struct kevent *cur_event)
     if (clnt_store_[cur_event->ident] != "")
     {
         int n = write(cur_event->ident, clnt_store_[cur_event->ident].c_str(),clnt_store_[cur_event->ident].size());
+        std::cout << "Writerable\n";
         if (n == -1)
         {
             std::cerr << "client write error!" << "\n";

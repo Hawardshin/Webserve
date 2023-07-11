@@ -11,13 +11,11 @@
 #include <map>
 #include <fcntl.h>
 /**
-
+ * @brief kqueue에 이벤트를 변경하거나 현재 이벤트가 발생했는지 감지할 수 있습니다.
  */
 class Kqueue
 {
 public:
-  static const int MAX_CHANGE = 5000;
-  static const int MAX_EVENT = 5000;
   Kqueue(){}
   ~Kqueue() {close(kqueue_fd_);}
   void  KqueueStart(const int &serv_sock);

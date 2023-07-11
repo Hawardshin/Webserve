@@ -67,9 +67,8 @@ class Kserver{
     int clnt_sockfd_;
     struct sockaddr_in clnt_addr_;
     socklen_t clnt_addrsz_;
+    //클라언트의 소켓 번호와 보내는 데이터를 담는 변수
     std::map<int, std::string> clnt_store_;
-    //접속해있는 클라이언트 숫자.
-    int clnt_num_;
 };
 
 #endif
