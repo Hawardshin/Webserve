@@ -1,10 +1,16 @@
 #include "Kqueue.hpp"
 
+/**
+ * @brief kqueue를 만들면서 서버 소켓을 첫번째 이벤트로 등록하는 함수
+ *
+ * @param serv_sock 서버소켓의 fd
+ */
 void  Kqueue::KqueueStart(const int &serv_sock)
 {
   kqueue_fd_ = kqueue();
   if (kqueue_fd_ == -1)
     throw(std::runtime_error("kqueue() ERROR!!"));
+  ChangeEvent(serv_sock, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);//kqueue에 서버소켓 readEvent 등록
 }
 
 /**
@@ -35,6 +41,7 @@ void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata)
 int  Kqueue::detectEvent(struct kevent *event_list)
 {
   int n_event = kevent(kqueue_fd_, &change_list_[0], change_list_.size(),event_list, 8, NULL);
+  std::cout << n_event << "\n";
   if (n_event == -1)
      throw(std::runtime_error("kevent() ERROR!!"));
   change_list_.clear(); // clear change_list for new changes

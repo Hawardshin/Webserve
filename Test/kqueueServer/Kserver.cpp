@@ -49,8 +49,6 @@ void  Kserver::Server_init(){
   sockInit();
   sockBind();
   sockListen();
-	kqueue_.KqueueStart(serv_sockfd_);//kqueue 시작
-	kqueue_.ChangeEvent(serv_sockfd_, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);//kqueue에 서버소켓 readEvent 등록
 }
 /**
  * @brief accept 함수 호출합니다. 호출된 clnt_sockfd에 accept된 fd가 있어서 그것들에 대한 처리가 필요합니다.
@@ -65,12 +63,15 @@ void  Kserver::sockAccept(){
   std::cout << "Connected Client : " << clnt_sockfd_ << "\n";
 }
 
-
+/**
+ * @brief 메인로직 kqueue를 시작하고 무한 루프를 돌면서 이벤트를 감지->처리합니다.
+ *
+ */
  void  Kserver::startWorking()
  {
+  kqueue_.KqueueStart(serv_sockfd_);
   while (1)
   {
-    kqueue_.KqueueStart(serv_sockfd_);
     event_list_size_ = kqueue_.detectEvent(event_list_);
     handleEvents();
   }
@@ -113,6 +114,10 @@ void  Kserver::sockListen(){
 	fcntl(serv_sockfd_, F_SETFL, O_NONBLOCK);
 }
 
+/**
+ * @brief 코어함수! 여기서 kqueue에서 받아온 이벤트들을 하나씩 처리해준다.
+ *
+ */
 void  Kserver::handleEvents()
 {
   struct kevent *cur_event;
@@ -121,35 +126,26 @@ void  Kserver::handleEvents()
     cur_event = &event_list_[i];
     if (cur_event->filter ==  EVFILT_READ)
     {
-      if (cur_event->ident == serv_sockfd_)
+      if ((int)cur_event->ident == serv_sockfd_)
         registerNewClnt();
       else//client-socket
-        clntSockReadable(cur_event);
+        sockReadable(cur_event);
     }
-    else if (cur_event->filter == EVFILT_WRITE) //ONLY CLIENT
-    {
-      std::map<int, std::string>::iterator it = clnt_data_store_.find(cur_event->ident);
-      if (it != clnt_data_store_.end())
-      {
-          if (clnt_data_store_[cur_event->ident] != "")
-          {
-              int n = write(cur_event->ident, clnt_data_store_[cur_event->ident].c_str(),clnt_data_store_[cur_event->ident].size());
-              if (n == -1)
-              {
-                  std::cerr << "client write error!" << "\n";
-                  disconnectClient(cur_event->ident);
-              }
-              else
-                  clnt_data_store_[cur_event->ident].clear();
-          }
-      }
-    }
+    else if (cur_event->filter == EVFILT_WRITE)
+      sockWriterable(cur_event);//ONLY CLIENT
     else
-      throw("THAT'S IMPOSSIBLE THIS IS CODE ERROR!!");
+    {
+      std:: cout << "????????"<<  cur_event->filter << "\n";
+      throw(std::runtime_error("THAT'S IMPOSSIBLE THIS IS CODE ERROR!!"));
+    }
   }
 }
 
-
+/**
+ * @brief 새로운 클라이언트를 받았다고 생각한 함수 클라이언트 소켓을 accept 해주고, noblocking으로 만든 후, kqueue 이벤트에 read,write 모두 등록해줍니다.
+ * 추가적으로 클라이언트 저장소에 빈 문자열로 저장해줍니다.
+ *
+ */
 void  Kserver::registerNewClnt()
 {
   clnt_addrsz_ = sizeof(clnt_addr_);
@@ -160,28 +156,67 @@ void  Kserver::registerNewClnt()
   fcntl(clnt_sockfd_, F_SETFL, O_NONBLOCK);
   kqueue_.ChangeEvent(clnt_sockfd_, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);
   kqueue_.ChangeEvent(clnt_sockfd_, EVFILT_WRITE, EV_ADD | EV_ENABLE, NULL);
-  clnt_data_store_[clnt_sockfd_] = "";
+  clnt_store_[clnt_sockfd_] = "";
 }
 
 /**
  * @brief client socket is in a readable state
  *
+ * @param cur_event 클라이언트 소켓에 해당되는 발생한 이벤트 구조체
  */
-void  Kserver::clntSockReadable(struct kevent *cur_event)
+void  Kserver::sockReadable(struct kevent *cur_event)
 {
-  if (clnt_data_store_.find(cur_event->ident) == clnt_data_store_.end())
-    throw("INVALID CLIENT_SOCKET() (It's impossible)");
+  if (clnt_store_.find(cur_event->ident) == clnt_store_.end())
+  {
+    std::cout << "Already disconnected\n";
+    return ;
+  }
   int rlen = read(cur_event->ident ,buff_, BUFF_SIZE);
   if (rlen == -1)
     throw(std::runtime_error("READ() ERROR!! IN CLNT_SOCK"));
-  buff_[rlen] = '\0';
-  clnt_data_store_[cur_event->ident] += buff_;
-  std::cout << "FROM CLIENT NUM " << cur_event->ident << ": " << clnt_data_store_[cur_event->ident] << "\n";
+  if (rlen == 0)
+  {
+    std::cout << "clnt shoot eof\n";
+    disconnectClient(cur_event->ident);
+  }
+  else
+  {
+    buff_[rlen] = '\0';
+    clnt_store_[cur_event->ident] += buff_;
+    std::cout << "FROM CLIENT NUM " << cur_event->ident << ": " << clnt_store_[cur_event->ident] << "\n";
+  }
+}
+/**
+ * @brief clnt socket is writable state
+ *
+ * @param cur_event 클라이언트 소켓에 해당되는 발생한 이벤트 구조체
+ */
+void  Kserver::sockWriterable(struct kevent *cur_event)
+{
+  if (clnt_store_.find(cur_event->ident) != clnt_store_.end())
+  {
+    if (clnt_store_[cur_event->ident] != "")
+    {
+        int n = write(cur_event->ident, clnt_store_[cur_event->ident].c_str(),clnt_store_[cur_event->ident].size());
+        if (n == -1)
+        {
+            std::cerr << "client write error!" << "\n";
+            disconnectClient(cur_event->ident);
+        }
+        else
+            clnt_store_[cur_event->ident].clear();
+    }
+  }
 }
 
+/**
+ * @brief 클라이언트 연결을 끊는 함수
+ *
+ * @param clnt_fd 연결을 끊을 클라이언트 fd
+ */
 void  Kserver::disconnectClient(int clnt_fd)
 {
   std::cout << "CLINET DISCONNECTED:: " << clnt_fd << "\n";
   close(clnt_fd);
-  clnt_data_store_.erase(clnt_fd);
+  clnt_store_.erase(clnt_fd);
 }
