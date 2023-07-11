@@ -41,7 +41,7 @@ void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata)
 int  Kqueue::detectEvent(struct kevent *event_list)
 {
   int n_event = kevent(kqueue_fd_, &change_list_[0], change_list_.size(),event_list, 8, NULL);
-  std::cout << n_event << "\n";
+  // std::cout << n_event << "\n";
   if (n_event == -1)
      throw(std::runtime_error("kevent() ERROR!!"));
   change_list_.clear(); // clear change_list for new changes

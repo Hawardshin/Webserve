@@ -217,6 +217,8 @@ void  Kserver::sockWriterable(struct kevent *cur_event)
 void  Kserver::disconnectClient(int clnt_fd)
 {
   std::cout << "CLINET DISCONNECTED:: " << clnt_fd << "\n";
+  // kqueue_.ChangeEvent(clnt_fd, EVFILT_READ, EV_DELETE | EV_DISABLE, NULL);
+  // kqueue_.ChangeEvent(clnt_fd,EVFILT_WRITE, EV_DELETE | EV_DISABLE, NULL);
   close(clnt_fd);
   clnt_store_.erase(clnt_fd);
 }
