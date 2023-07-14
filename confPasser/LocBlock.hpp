@@ -1,23 +1,19 @@
 #ifndef LOCBLOCK_HPP
 # define LOCBLOCK_HPP
 
-# include <fstream>
-# include <sstream>
-# include <iostream>
-# include <string>
-# include <vector>
-# include <map>
 
+# include "ParseTool.hpp"
+# include "OtherBlock.hpp"
 class LocBlock{
 public:
-  LocBlock();
-  // explicit LocBlock();
+	LocBlock();
+	// explicit LocBlock();
 
-  ~LocBlock();
+	~LocBlock();
 
 private:
-
-  std::map<std::string, std::string> loc_directives_;
+	std::vector<OtherBlock> other_store_;
+	std::map<std::string, std::string> loc_directives_;
 };
 
 #endif

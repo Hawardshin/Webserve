@@ -7,7 +7,9 @@ SRCS = main.cpp	\
 			 ConfParser.cpp \
 			 HttpBlock.cpp \
 			 LocBlock.cpp \
-			 ServBlock.cpp
+			 ServBlock.cpp \
+			 ParseTool.cpp \
+			 OtherBlock.cpp
 
 
 RM = rm -rf
