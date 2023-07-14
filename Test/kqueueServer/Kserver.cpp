@@ -135,7 +135,7 @@ void  Kserver::handleEvents()
       sockWriterable(cur_event);//ONLY CLIENT
     else
     {
-      std:: cout << "????????"<<  cur_event->filter << "\n";
+      std:: cout << "????????" <<  cur_event->filter << "\n";
       throw(std::runtime_error("THAT'S IMPOSSIBLE THIS IS CODE ERROR!!"));
     }
   }
@@ -174,8 +174,7 @@ void  Kserver::sockReadable(struct kevent *cur_event)
   int rlen = read(cur_event->ident ,buff_, BUFF_SIZE);
   if (rlen == -1)
     throw(std::runtime_error("READ() ERROR!! IN CLNT_SOCK"));
-  if (rlen == 0)
-  {
+  if (rlen == 0){
     std::cout << "clnt shoot eof\n";
     disconnectClient(cur_event->ident);
   }

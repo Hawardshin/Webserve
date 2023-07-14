@@ -34,41 +34,41 @@
  * @note kqueue에 한번 등록한 이벤트는 삭제하지 않는한 계속 존재한다는 사실을 기억합시다.
  */
 class Kserver{
-  public :
-    static const int BUFF_SIZE = 500;
+	public :
+		static const int BUFF_SIZE = 500;
 
-    explicit Kserver(char *port);
-    ~Kserver();
-    void  Server_init();
-    void  sockAccept();//현재 사용하지 않습니다.
-    void  startWorking();
-  private:
-    Kserver();
-    void  sockInit();
-    void  sockBind();
-    void  sockListen();
-    void  handleEvents();
-    void  registerNewClnt();
-    void  sockReadable(struct kevent *cur_event);
-    void  sockWriterable(struct kevent *cur_event);
-    void  disconnectClient(int clnt_fd);
+		explicit Kserver(char *port);
+		~Kserver();
+		void  Server_init();
+		void  sockAccept();//현재 사용하지 않습니다.
+		void  startWorking();
+	private:
+		Kserver();
+		void  sockInit();
+		void  sockBind();
+		void  sockListen();
+		void  handleEvents();
+		void  registerNewClnt();
+		void  sockReadable(struct kevent *cur_event);
+		void  sockWriterable(struct kevent *cur_event);
+		void  disconnectClient(int clnt_fd);
 		Kqueue kqueue_;
-    struct kevent event_list_[8];//한번 감지된 이벤트의 배열
-    int event_list_size_;
-    char buff_[BUFF_SIZE];
-    int port_;
+		struct kevent event_list_[8];//한번 감지된 이벤트의 배열
+		int event_list_size_;
+		char buff_[BUFF_SIZE];
+		int port_;
 
-    //server socket
-    int serv_sockfd_;
-    struct sockaddr_in serv_addr_;
-    socklen_t serv_addrsz_;
+		//server socket
+		int serv_sockfd_;
+		struct sockaddr_in serv_addr_;
+		socklen_t serv_addrsz_;
 
-    //client socket
-    int clnt_sockfd_;
-    struct sockaddr_in clnt_addr_;
-    socklen_t clnt_addrsz_;
-    //클라언트의 소켓 번호와 보내는 데이터를 담는 변수
-    std::map<int, std::string> clnt_store_;
+		//client socket
+		int clnt_sockfd_;
+		struct sockaddr_in clnt_addr_;
+		socklen_t clnt_addrsz_;
+		//클라언트의 소켓 번호와 보내는 데이터를 담는 변수
+		std::map<int, std::string> clnt_store_;
 };
 
 #endif

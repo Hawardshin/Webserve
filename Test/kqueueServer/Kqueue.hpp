@@ -16,13 +16,13 @@
 class Kqueue
 {
 public:
-  Kqueue(){}
-  ~Kqueue() {close(kqueue_fd_);}
-  void  KqueueStart(const int &serv_sock);
-  void ChangeEvent(int ident, int filter, int flags, void *udata);
-  int  detectEvent(struct kevent *event_list);
+	Kqueue(){}
+	~Kqueue() {close(kqueue_fd_);}
+	void  KqueueStart(const int &serv_sock);
+	void ChangeEvent(int ident, int filter, int flags, void *udata);
+	int  detectEvent(struct kevent *event_list);
 private:
-  std::vector<struct kevent> change_list_;//등록할 이벤트만 담아주고 kqueue에 등록했다면, clear() 해서 비워줍니다.
+	std::vector<struct kevent> change_list_;//등록할 이벤트만 담아주고 kqueue에 등록했다면, clear() 해서 비워줍니다.
 	int kqueue_fd_;
 };
 

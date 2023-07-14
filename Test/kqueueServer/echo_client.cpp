@@ -15,87 +15,87 @@
 
 class Client
 {
-  public :
-    static const int BUFF_SIZE = 500;
+	public :
+		static const int BUFF_SIZE = 500;
 
-    void  initServAdr(char *ip_ad, char* port);
-    void  make_sock();
-    const int& getSock();
-    void  Connet_with_server();
-    void  sendData();
-    void  receiveResult();
-    void  closeConnect();
-  private :
-    int sockfd;
-    struct sockaddr_in serv_adr;
-    char buff[BUFF_SIZE];
+		void  initServAdr(char *ip_ad, char* port);
+		void  make_sock();
+		const int& getSock();
+		void  Connet_with_server();
+		void  sendData();
+		void  receiveResult();
+		void  closeConnect();
+	private :
+		int sockfd;
+		struct sockaddr_in serv_adr;
+		char buff[BUFF_SIZE];
 
 };
 
 void Client:: initServAdr(char *ip_ad, char* port){
-  std::memset(&serv_adr, 0,sizeof(serv_adr));
-  inet_aton(ip_ad, &serv_adr.sin_addr);
-  serv_adr.sin_family = AF_INET;
-  serv_adr.sin_port = htons(std::atoi(port));
+	std::memset(&serv_adr, 0,sizeof(serv_adr));
+	inet_aton(ip_ad, &serv_adr.sin_addr);
+	serv_adr.sin_family = AF_INET;
+	serv_adr.sin_port = htons(std::atoi(port));
 }
 
 void Client:: make_sock(){
-  sockfd = socket(PF_INET, SOCK_STREAM, 0);
+	sockfd = socket(PF_INET, SOCK_STREAM, 0);
 }
 
 const int &Client:: getSock(){
-  return (sockfd);
+	return (sockfd);
 }
 
 void  Client::Connet_with_server(){
-  if (connect(sockfd, (sockaddr *)&serv_adr, sizeof(serv_adr)) == -1)
-    throw(std::runtime_error("connet error"));
-  std::cout << "Connected:..............\n";
+	if (connect(sockfd, (sockaddr *)&serv_adr, sizeof(serv_adr)) == -1)
+		throw(std::runtime_error("connet error"));
+	std::cout << "Connected:..............\n";
 }
 
 void  Client::sendData()
 {
-  std::cout << "SEND TO MESSAGE TO SERVER: ";
-  std::cin >> buff;
-  write(sockfd, &buff, BUFF_SIZE);
-  // fflush(sockfd);
+	std::cout << "SEND TO MESSAGE TO SERVER: ";
+	std::cin >> buff;
+	write(sockfd, &buff, BUFF_SIZE);
+	// fflush(sockfd);
 }
 
 void  Client::receiveResult(){
-  int len = read(sockfd, buff, BUFF_SIZE);
-  if (len == 0)
-    return ;
-  else
-  {
-    buff[len ] = '\0';
-    std::cout <<"FROM SERVER : " <<buff << "\n";
-  }
+	int len = read(sockfd, buff, BUFF_SIZE);
+	if (len == 0)
+		return ;
+	else
+	{
+		buff[len ] = '\0';
+		std::cout <<"FROM SERVER : " <<buff << "\n";
+	}
 }
 
 void Client::closeConnect(){
-  close(sockfd);
+	close(sockfd);
 }
 
 int main(int argc, char *argv[])
 {
-  if (argc != 3){
-    std::cerr << "error : <ip> <port>\n";
-    return (1);
-  }
-  try
-  {
-    Client s1;
-    s1.initServAdr(argv[1], argv[2]);
-    s1.make_sock();
-    s1.Connet_with_server();
-    while (1)
-    {
-      s1.sendData();
-      s1.receiveResult();
-    }
-    s1.closeConnect();
-  }
-  catch(std::exception &e){
-    std::cout << e.what() << "\n";
-  }
+	if (argc != 3){
+		std::cerr << "error : <ip> <port>\n";
+		return (1);
+	}
+	try
+	{
+		Client s1;
+		s1.initServAdr(argv[1], argv[2]);
+		s1.make_sock();
+		s1.Connet_with_server();
+		while (1)
+		{
+			s1.sendData();
+			s1.receiveResult();
+		}
+		s1.closeConnect();
+	}
+	catch(std::exception &e){
+		std::cout << e.what() << "\n";
+	}
 }

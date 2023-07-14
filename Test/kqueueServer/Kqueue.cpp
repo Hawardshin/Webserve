@@ -7,10 +7,10 @@
  */
 void  Kqueue::KqueueStart(const int &serv_sock)
 {
-  kqueue_fd_ = kqueue();
-  if (kqueue_fd_ == -1)
-    throw(std::runtime_error("kqueue() ERROR!!"));
-  ChangeEvent(serv_sock, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);//kqueue에 서버소켓 readEvent 등록
+	kqueue_fd_ = kqueue();
+	if (kqueue_fd_ == -1)
+		throw(std::runtime_error("kqueue() ERROR!!"));
+	ChangeEvent(serv_sock, EVFILT_READ, EV_ADD | EV_ENABLE, NULL);//kqueue에 서버소켓 readEvent 등록
 }
 
 /**
@@ -27,7 +27,7 @@ void  Kqueue::KqueueStart(const int &serv_sock)
 void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata)
 {
 	struct kevent tmp_event;
-  EV_SET(&tmp_event , ident, filter, flags, 0, 0, udata );
+	EV_SET(&tmp_event , ident, filter, flags, 0, 0, udata );
 	change_list_.push_back(tmp_event);
 }
 
@@ -40,11 +40,11 @@ void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata)
  */
 int  Kqueue::detectEvent(struct kevent *event_list)
 {
-  int n_event = kevent(kqueue_fd_, &change_list_[0], change_list_.size(),event_list, 8, NULL);
-  // std::cout << n_event << "\n";
-  if (n_event == -1)
-     throw(std::runtime_error("kevent() ERROR!!"));
-  change_list_.clear(); // clear change_list for new changes
-  return (n_event);
+	int n_event = kevent(kqueue_fd_, &change_list_[0], change_list_.size(),event_list, 8, NULL);
+	// std::cout << n_event << "\n";
+	if (n_event == -1)
+		 throw(std::runtime_error("kevent() ERROR!!"));
+	change_list_.clear(); // clear change_list for new changes
+	return (n_event);
 }
 
