@@ -27,10 +27,20 @@ void  ConfParser::confInit(){
 	}
 }
 
+/**
+ * @brief 파일이름이 있는 경우만 호출합니다.
+ *
+ * @param argv 파일의 경로
+ */
 void  ConfParser::confPathInit(char* argv){
 	file_name_ = argv;
 }
 
+/**
+ * @brief 
+ *
+ * @param input
+ */
 void  ConfParser::parseConf(std::ifstream& input){
 	std::string line;
 	int line_len = 0;
@@ -61,7 +71,7 @@ void  ConfParser::parseConf(std::ifstream& input){
 			}
 		}
 		else{//짝이 맞는 중괄호가 나올 때까지 재귀적으로 들어간다.
-			
+
 
 
 
