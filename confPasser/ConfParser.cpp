@@ -1,10 +1,11 @@
 # include "ConfParser.hpp"
 
 //default_conf_file
-ConfParser::ConfParser():file_name_("./default.conf") ,root_(""), index_(""), autoindex_(""){}
+ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0), root_(false), index_(false), autoindex_(false), error_page_(false){}
 ConfParser::~ConfParser(){}
 /**
- * @brief conf파일을 열어서 conf파일을 http_store에 저장해줍니다.
+ * @brief conf파일을 열어서 conf파일을 http_store 벡터에 저장해줍니다.
+ * (http안에서 serv_block, serv_block안에 loc_block까지 다 채우기)
  * @details 각 conf파일의 구조에 맞게 클래스 내부에 블록들에 대한 저장을 가지고 있습니다.
  * 1. root에서 http 블록에 해당하는 모든 블록을 가지고 있고,
  * 2. http에서 모든 server 블록을
@@ -21,7 +22,8 @@ void  ConfParser::confInit(){
 		parseConf(conf_file);
 	}
 	catch(std::exception &e){
-		std::cerr << e.what();
+		std::cerr << file_name_ << " : " << line_len_ << "\n";
+		std::cerr << e.what() << "\n";
 		conf_file.close();
 		throw(std::invalid_argument(""));
 	}
@@ -32,50 +34,83 @@ void  ConfParser::confInit(){
  *
  * @param argv 파일의 경로
  */
-void  ConfParser::confPathInit(char* argv){
+void	ConfParser::confPathInit(char* argv){
 	file_name_ = argv;
 }
 
 /**
- * @brief 
+ * @brief
  *
+ * @param line
  * @param input
+ */
+void	ConfParser::makeBlock(std::string line, std::ifstream& input){
+	size_t pos = line.find('{');
+	std::string block_name = line.substr(0, pos);
+	trimSidesSpace(block_name);
+	std::cout << "5. |" << block_name << "|"<< std::endl;;
+	(void)input;
+	if (pos != line.size() - 1 || block_name == "")
+		throw(std::runtime_error("this is not block"));
+	switch(check_blockname(block_name)){
+		case HTTP : makeHttpBlock(input);
+			break;
+		case SERVER : throw(std::runtime_error("this is not block"));
+		case LOCATION : throw(std::runtime_error("this is not block"));
+		case OTHER : makeOtherBlock(input);
+			break;
+	}
+}
+
+void	ConfParser::makeHttpBlock(std::ifstream& input){
+	if (http_store_.size() != 0)
+		throw(std::runtime_error("there are two http block!!"));
+	HttpBlock new_block;
+	http_store_.push_back(new_block);
+	new_block.parseUntilEnd(input, line_len_);
+}
+
+void	ConfParser::makeOtherBlock(std::ifstream& input){
+	OtherBlock new_block;
+	other_store_.push_back(new_block);
+	new_block.parseUntilEnd(input);
+}
+
+
+/**
+ * @brief 메인로직 conf파일을 하나의 파일에 담아줍니다.
+ * @details [블록 파싱 규칙]
+ * 1. 블록은 "server {"  이런식으로 생긴 것만 생각합니다.
+ * [ex]
+  server
+  # hi
+  # hello
+  {
+  }
+  이런식으로 되있는 경우는 아에 안되는 것으로 처리하겠습니다.
+	ex : server{location{}} 이렇게 오는것도 안 합니다.
+	 @warning runtime_error를 던집니다.
+ * @param input ifstream으로 연 파일
  */
 void  ConfParser::parseConf(std::ifstream& input){
 	std::string line;
-	int line_len = 0;
 	std::string directive = "";
-	while (std::getline(input, line) ){
-		line_len++;
+	while (std::getline(input, line)){
+		trimComment(line);
+		trimSidesSpace(line);
+		line_len_++;
+		if (line == "")
+			continue;
 		size_t dir_pos_a = line.find('{');
 		size_t dir_pos_b = line.find(';');
-		std::cout << line << "\n"  << std::endl;
-		if (dir_pos_a == std::string::npos && dir_pos_b == std::string::npos){
-			std::cout << "ss!!!1" << std::endl;
-			std::cout << "|" <<line  << "|"<< "\n";
-			trimComment(line);
-			trimSidesSpace(line);
-			if (line == "")//공백만 있거나 탭만 있는 경우
-				continue;
-			std::cerr << file_name_ << " : " << line_len;
+		std::cout << "2. line|"<< line << "|" << std::endl;
+		if ((dir_pos_a == std::string::npos && dir_pos_b == std::string::npos)  || \
+					(dir_pos_a != std::string::npos && dir_pos_b != std::string::npos))
 			throw(std::runtime_error(" [ERROR in Nginx conf_file]"));
-		}
-		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos){
-			// std::cout << "ss!!!2"  << std::endl;
-			try{
+		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
 				extractDirective(line.substr(0, dir_pos_b));
-			}catch(std::exception &e){
-				std::cerr <<e.what() << "\n";
-				std::cerr << file_name_ << " : " << line_len;
-				throw(std::runtime_error("[ERROR in Nginx confile]"));
-			}
-		}
-		else{//짝이 맞는 중괄호가 나올 때까지 재귀적으로 들어간다.
-
-
-
-
-		}
+		else // {가 나오는 경우
+			makeBlock(line, input);
 	}
 }
 
@@ -89,30 +124,14 @@ void  ConfParser::parseConf(std::ifstream& input){
 void  ConfParser::extractDirective(std::string line){
 
 	std::string key, value;
-	 //주석을 지워줍니다.
-
-	trimComment(line);
-	trimSidesSpace(line);
-	std::cout << "line:|"<< line << "|\n";
-	//스페이스를 기준으로 key와 value를 만든다음에 그값을 map에 넣어준다.
-	size_t tmpos = line.find(' ');
-	//directive를 잘랐는데 directive<space>value로 되어있어야 하기 때문에 아닌 경우에 대해서 처리해준 것입니다.
-	if (tmpos == std::string::npos){
-		throw(std::runtime_error("ERROR DIRECTIVE key"));
-	}
-	key = line.substr(0,tmpos);
-	std::cout << "key:|"<< key << "|\n";
-	for (; tmpos < line.size(); tmpos++){
-		if (line[tmpos] != ' ' && line[tmpos] != '\t')
-			break;
-	}
-	value = line.substr(tmpos);
-	std::cout << "value:|"<< value << "|\n";
+	splitKeyVal(key, value, line);
 	if (key == "root")
-		root_ = value;
+		root_ = true;
 	if (key == "index")
-		index_ = value;
+		index_ = true;
 	if (key == "autoindex")
-		autoindex_ = value;
+		autoindex_ = true;
+	if (key == "error_page")
+		error_page_ = true;
 	root_directives_[key] = value;
 }

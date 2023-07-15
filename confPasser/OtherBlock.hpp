@@ -4,6 +4,8 @@
 class OtherBlock{
 	public :
 		std::string block_name_;
+		void	makeBlock(std::string line, std::ifstream& input);
+		void	parseUntilEnd(std::ifstream& input);
 	private :
 		std::vector<OtherBlock> other_store_;
 		std::map<std::string, std::string> other_directives_;

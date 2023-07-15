@@ -7,18 +7,15 @@
 class LocBlock{
 public:
 	LocBlock();
-	// explicit LocBlock();
-
 	~LocBlock();
-
+	void	makeBlock(std::string line, std::ifstream& input);
 private:
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> loc_directives_;
-	std::string root_;
-	std::string index_;
-	std::string autoindex_;
-	std::string error_page_;
-	
+	bool root_;
+	bool index_;
+	bool autoindex_;
+	bool error_page_;
 };
 
 #endif

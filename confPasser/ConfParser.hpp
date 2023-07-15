@@ -5,26 +5,29 @@
 
 class ConfParser{
 public:
-	ConfParser();//default_conf_file
 
+	ConfParser();//default_conf_file
 	~ConfParser();
 
-	void  confPathInit(char* argv);
-	void  confInit();//여기서 HTTP 블록 벡터를 다 채웁니다.(http안에서 serv_block, serv_block안에 loc_block까지 다 채우기)
-private:
-	void  parseConf(std::ifstream& input);
-	void  extractDirective(std::string line);
-	void  deleteComment(std::string& line);
-	std::string file_name_;
-	std::vector<HttpBlock> http_store_;
-	std::vector<OtherBlock> other_store_;
-	std::map<std::string, std::string> root_directives_;
-	//key : derective value : value
+	void	confPathInit(char* argv);
+	void	confInit();
+	void	makeBlock(std::string line, std::ifstream& input);
 
-	std::string root_;
-	std::string index_;
-	std::string autoindex_;
-	std::string error_page_;
+private:
+	void	parseConf(std::ifstream& input);
+	void	extractDirective(std::string line);
+	void	makeHttpBlock(std::ifstream& input);
+	void	makeOtherBlock(std::ifstream& input);
+	std::vector<HttpBlock>	http_store_;
+	std::vector<OtherBlock>	other_store_;
+	std::map<std::string, std::string>	root_directives_;
+	std::string	file_name_;
+	//key : derective value : value
+	int		line_len_;
+	bool	root_;
+	bool	index_;
+	bool	autoindex_;
+	bool	error_page_;
 };
 
 #endif
