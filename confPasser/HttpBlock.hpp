@@ -11,6 +11,10 @@ private:
 	std::vector<ServBlock> serv_store_;
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> http_directives_;
+	std::string root_;
+	std::string index_;
+	std::string autoindex_;
+	std::string error_page_;
 };
 
 #endif

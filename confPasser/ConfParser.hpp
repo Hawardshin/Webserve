@@ -18,10 +18,13 @@ private:
 	std::string file_name_;
 	std::vector<HttpBlock> http_store_;
 	std::vector<OtherBlock> other_store_;
-	std::map<std::string, std::string> root_directives_;//key : derective value : value
+	std::map<std::string, std::string> root_directives_;
+	//key : derective value : value
+
 	std::string root_;
 	std::string index_;
 	std::string autoindex_;
+	std::string error_page_;
 };
 
 #endif

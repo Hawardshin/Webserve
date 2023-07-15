@@ -12,6 +12,15 @@ private:
 	std::vector<LocBlock> loc_store_;
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> serv_directives_;
+	std::string root_;
+	std::string index_;
+	std::string autoindex_;
+	std::string error_page_;
+
+	//only server member
+	std::string server_name_;
+	std::string listen_;
+	bool default_server_;
 };
 
 #endif
