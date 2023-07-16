@@ -53,6 +53,22 @@ void	splitKeyVal(std::string& key, std::string &value, std::string &line){
 }
 
 /**
+ * @brief 앞뒤로 스페이스바 삭제해주고 Directive를 추출합니다.
+ * 이후 정상적인 코드라고 생각하고 그 값을 파싱해줍니다.
+ * 여러개인 경우 space로 띄워져 있습니다.
+ *
+ * @param line ';'로 잘린 문자열이 들어옵니다.
+ * @param directives_map-클래스에서 directive들을 저장할 저장소
+ */
+void  extractDirective(std::string line, std::map<std::string, std::string>& directives_map){
+
+	std::string key, value;
+	splitKeyVal(key, value, line);
+	directives_map[key] = value;
+}
+
+
+/**
  * @brief 어떤 블록인지 리턴해주는 함수
  *
  * @details switch 문 쓰려고 만들었어요
@@ -68,3 +84,4 @@ e_block	check_blockname(std::string block_name){
 		return (LOCATION);
 	return (OTHER);
 }
+

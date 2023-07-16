@@ -9,6 +9,7 @@ public:
 	LocBlock();
 	~LocBlock();
 	void	makeBlock(std::string line, std::ifstream& input);
+	std::map<std::string, std::string>& getDirStore();
 private:
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> loc_directives_;

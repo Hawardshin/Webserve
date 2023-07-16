@@ -12,10 +12,9 @@ public:
 	void	confPathInit(char* argv);
 	void	confInit();
 	void	makeBlock(std::string line, std::ifstream& input);
-
+	std::map<std::string, std::string>& getDirStore();
 private:
 	void	parseConf(std::ifstream& input);
-	void	extractDirective(std::string line);
 	void	makeHttpBlock(std::ifstream& input);
 	void	makeOtherBlock(std::ifstream& input);
 	std::vector<HttpBlock>	http_store_;

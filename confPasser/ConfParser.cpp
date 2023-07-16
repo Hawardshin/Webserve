@@ -1,8 +1,20 @@
 # include "ConfParser.hpp"
 
+//public
 //default_conf_file
 ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0), root_(false), index_(false), autoindex_(false), error_page_(false){}
+
 ConfParser::~ConfParser(){}
+
+/**
+ * @brief 파일이름이 있는 경우만 호출합니다.
+ *
+ * @param argv 파일의 경로
+ */
+void	ConfParser::confPathInit(char* argv){
+	file_name_ = argv;
+}
+
 /**
  * @brief conf파일을 열어서 conf파일을 http_store 벡터에 저장해줍니다.
  * (http안에서 serv_block, serv_block안에 loc_block까지 다 채우기)
@@ -15,7 +27,7 @@ ConfParser::~ConfParser(){}
  * @warning 오류가 발생하면 invalid_argument가 throw 됩니다. (오류가 나도 close 처리는 해줬습니다.)
  */
 void  ConfParser::confInit(){
-	std::ifstream conf_file(file_name_);
+	std::ifstream conf_file(file_name_.c_str());
 	if (!conf_file.is_open())
 		throw std::invalid_argument("Error : there is no conf_file\n");
 	try{
@@ -27,15 +39,6 @@ void  ConfParser::confInit(){
 		conf_file.close();
 		throw(std::invalid_argument(""));
 	}
-}
-
-/**
- * @brief 파일이름이 있는 경우만 호출합니다.
- *
- * @param argv 파일의 경로
- */
-void	ConfParser::confPathInit(char* argv){
-	file_name_ = argv;
 }
 
 /**
@@ -62,18 +65,29 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input){
 	}
 }
 
+/**
+ * @brief Get the root_directives_ 클래스 멤버를 반환해서 레퍼런스로 사용하려고 다음과 같은 함수를 반들었습니다.
+ *
+ * @return std::map<std::string, std::string>
+ */
+std::map<std::string, std::string>& ConfParser::getDirStore(){
+	return (root_directives_);
+}
+
+
 void	ConfParser::makeHttpBlock(std::ifstream& input){
 	if (http_store_.size() != 0)
 		throw(std::runtime_error("there are two http block!!"));
 	HttpBlock new_block;
 	http_store_.push_back(new_block);
-	new_block.parseUntilEnd(input, line_len_);
+	parseUntilEnd(input, line_len_, new_block);
 }
 
 void	ConfParser::makeOtherBlock(std::ifstream& input){
 	OtherBlock new_block;
 	other_store_.push_back(new_block);
-	new_block.parseUntilEnd(input);
+	(void) input;
+	// parseUntilEnd(input, line_len_, new_block);
 }
 
 
@@ -103,35 +117,17 @@ void  ConfParser::parseConf(std::ifstream& input){
 			continue;
 		size_t dir_pos_a = line.find('{');
 		size_t dir_pos_b = line.find(';');
+		size_t dir_pos_c = line.find('}');
 		std::cout << "2. line|"<< line << "|" << std::endl;
-		if ((dir_pos_a == std::string::npos && dir_pos_b == std::string::npos)  || \
+		if (dir_pos_c != std::string::npos || \
+					(dir_pos_a == std::string::npos && dir_pos_b == std::string::npos)  || \
 					(dir_pos_a != std::string::npos && dir_pos_b != std::string::npos))
 			throw(std::runtime_error(" [ERROR in Nginx conf_file]"));
 		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
-				extractDirective(line.substr(0, dir_pos_b));
+				extractDirective(line.substr(0, dir_pos_b),root_directives_);
 		else // {가 나오는 경우
 			makeBlock(line, input);
 	}
 }
 
-/**
- * @brief 앞뒤로 스페이스바 삭제해주고 Directive를 추출합니다.
- * 이후 정상적인 코드라고 생각하고 그 값을 파싱해줍니다.
- * 여러개인 경우 space로 띄워져 있습니다.
- *
- * @param line ';'로 잘린 문자열이 들어옵니다.
- */
-void  ConfParser::extractDirective(std::string line){
 
-	std::string key, value;
-	splitKeyVal(key, value, line);
-	if (key == "root")
-		root_ = true;
-	if (key == "index")
-		index_ = true;
-	if (key == "autoindex")
-		autoindex_ = true;
-	if (key == "error_page")
-		error_page_ = true;
-	root_directives_[key] = value;
-}

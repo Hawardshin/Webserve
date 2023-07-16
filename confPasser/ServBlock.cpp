@@ -21,3 +21,7 @@ LocBlock ServBlock::findLocBlock(std::string path){
 	(void)path;
 	return loc_store_[0];
 }
+
+std::map<std::string, std::string>& ServBlock::getDirStore(){
+	return (serv_directives_);
+}
