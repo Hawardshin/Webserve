@@ -39,9 +39,9 @@ void	HttpBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 void	HttpBlock::makeServerBlock(std::ifstream& input, int& line_len_){
 	ServBlock new_block;
 	serv_store_.push_back(new_block);
-	(void)input;
-	(void) line_len_;
-	// parseUntilEnd(input, line_len_, new_block);
+	// (void)input;
+	// (void) line_len_;
+	parseUntilEnd(input, line_len_, new_block);
 }
 
 void	HttpBlock::makeOtherBlock(std::ifstream& input, int& line_len_){

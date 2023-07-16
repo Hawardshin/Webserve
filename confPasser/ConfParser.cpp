@@ -42,10 +42,11 @@ void  ConfParser::confInit(){
 }
 
 /**
- * @brief
+ * @brief 새로운 블록을 만드는 함수 블록은 오직 "http {"
+ * 또는 "블록_이름 {" 로 들어오는 것만 올바른 블록이라 인식했습니다.
  *
- * @param line
- * @param input
+ * @param line "블록 명{" 이렇게 들어온 한 줄
+ * @param input 열어 ifstream으로 열어둔 conf파일
  */
 void	ConfParser::makeBlock(std::string line, std::ifstream& input){
 	size_t pos = line.find('{');
@@ -54,12 +55,12 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input){
 	std::cout << "5. |" << block_name << "|"<< std::endl;;
 	(void)input;
 	if (pos != line.size() - 1 || block_name == "")
-		throw(std::runtime_error("this is not block"));
+		throw(std::runtime_error("block name in ERROR"));
 	switch(check_blockname(block_name)){
 		case HTTP : makeHttpBlock(input);
 			break;
-		case SERVER : throw(std::runtime_error("this is not block"));
-		case LOCATION : throw(std::runtime_error("this is not block"));
+		case SERVER : throw(std::runtime_error("You need to create an HTTP block first.(server)"));
+		case LOCATION : throw(std::runtime_error("You need to create an HTTP block first.(location)"));
 		case OTHER : makeOtherBlock(input);
 			break;
 	}
@@ -68,13 +69,18 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input){
 /**
  * @brief Get the root_directives_ 클래스 멤버를 반환해서 레퍼런스로 사용하려고 다음과 같은 함수를 반들었습니다.
  *
- * @return std::map<std::string, std::string>
+ * @return std::map<std::string, std::string>& 클래스 맴버인 map 레퍼런스
  */
 std::map<std::string, std::string>& ConfParser::getDirStore(){
 	return (root_directives_);
 }
 
-
+/**
+ * @brief HTTP 블록을 만드는 함수
+ * @warning HTTP는 오직 1개의 블록만 올 수 있습니다.
+ *
+ * @param input
+ */
 void	ConfParser::makeHttpBlock(std::ifstream& input){
 	if (http_store_.size() != 0)
 		throw(std::runtime_error("there are two http block!!"));
