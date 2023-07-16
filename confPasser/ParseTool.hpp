@@ -23,9 +23,8 @@ void  extractDirective(std::string line, std::map<std::string, std::string>& dir
 e_block	check_blockname(std::string block_name);
 
 template <typename T>
-void	parseUntilEnd(std::ifstream& input,int &line_len_, T& block){
+void	parseUntilEnd(std::ifstream& input,int& line_len_, T& block){
 	std::string line;
-	std::string directive = "";
 
 	while (std::getline(input, line)){
 		trimComment(line);
@@ -37,7 +36,7 @@ void	parseUntilEnd(std::ifstream& input,int &line_len_, T& block){
 		size_t dir_pos_b = line.find(';');
 		size_t dir_pos_c = line.find('}');
 		std::cout << "2. line|"<< line << "|" << std::endl;
-		if (dir_pos_c != std::string::npos ){
+		if (dir_pos_c != std::string::npos ){  //괄호가 닫히는 경우
 			if (line.size() != 1)
 				throw(std::runtime_error(" '{' is only line by line"));
 			return ;
@@ -46,10 +45,11 @@ void	parseUntilEnd(std::ifstream& input,int &line_len_, T& block){
 					(dir_pos_a != std::string::npos && dir_pos_b != std::string::npos))
 			throw(std::runtime_error(" [ERROR in Nginx conf_file]"));
 		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
-				extractDirective(line.substr(0, dir_pos_b),block.getDirStore());
-		// else // {가 나오는 경우
-			// block.makeBlock(line, input);
+				extractDirective(line.substr(0, dir_pos_b), block.getDirStore());
+		else // {가 나오는 경우
+			block.makeBlock(line, input, line_len_);
 	}
+	throw(std::runtime_error("NOT CLOSE the {}"));
 }
 
 #endif

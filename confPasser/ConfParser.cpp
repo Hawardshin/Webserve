@@ -86,8 +86,7 @@ void	ConfParser::makeHttpBlock(std::ifstream& input){
 void	ConfParser::makeOtherBlock(std::ifstream& input){
 	OtherBlock new_block;
 	other_store_.push_back(new_block);
-	(void) input;
-	// parseUntilEnd(input, line_len_, new_block);
+	parseUntilEnd(input, line_len_, new_block);
 }
 
 

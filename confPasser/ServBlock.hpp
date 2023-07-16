@@ -7,7 +7,7 @@ public:
 	ServBlock();
 	~ServBlock();
 	LocBlock findLocBlock(std::string path);//http에서 path에 해당합니다.
-	void	makeBlock(std::string line, std::ifstream& input);
+	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 	std::map<std::string, std::string>& getDirStore();
 private:
 	std::vector<LocBlock> loc_store_;
