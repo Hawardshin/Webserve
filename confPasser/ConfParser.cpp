@@ -1,10 +1,19 @@
 # include "ConfParser.hpp"
 
-//public
-//default_conf_file
+/* public */
+
 ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0), root_(false), index_(false), autoindex_(false), error_page_(false){}
 
 ConfParser::~ConfParser(){}
+
+/**
+ * @brief Get the root_directives_ 클래스 멤버를 반환해서 레퍼런스로 사용하려고 다음과 같은 함수를 반들었습니다.
+ *
+ * @return std::map<std::string, std::string>& 클래스 맴버인 map 레퍼런스
+ */
+std::map<std::string, std::string>& ConfParser::getDirStore(){
+	return (root_directives_);
+}
 
 /**
  * @brief 파일이름이 있는 경우만 호출합니다.
@@ -66,35 +75,9 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input){
 	}
 }
 
-/**
- * @brief Get the root_directives_ 클래스 멤버를 반환해서 레퍼런스로 사용하려고 다음과 같은 함수를 반들었습니다.
- *
- * @return std::map<std::string, std::string>& 클래스 맴버인 map 레퍼런스
- */
-std::map<std::string, std::string>& ConfParser::getDirStore(){
-	return (root_directives_);
-}
 
-/**
- * @brief HTTP 블록을 만드는 함수
- * @warning HTTP는 오직 1개의 블록만 올 수 있습니다.
- *
- * @param input
- */
-void	ConfParser::makeHttpBlock(std::ifstream& input){
-	if (http_store_.size() != 0)
-		throw(std::runtime_error("there are two http block!!"));
-	HttpBlock new_block;
-	http_store_.push_back(new_block);
-	parseUntilEnd(input, line_len_, new_block);
-}
 
-void	ConfParser::makeOtherBlock(std::ifstream& input){
-	OtherBlock new_block;
-	other_store_.push_back(new_block);
-	parseUntilEnd(input, line_len_, new_block);
-}
-
+/* private */
 
 /**
  * @brief 메인로직 conf파일을 하나의 파일에 담아줍니다.
@@ -133,6 +116,34 @@ void  ConfParser::parseConf(std::ifstream& input){
 		else // {가 나오는 경우
 			makeBlock(line, input);
 	}
+
+
+/**
+ * @brief HTTP 블록을 만드는 함수
+ * @warning HTTP는 오직 1개의 블록만 올 수 있습니다.
+ *
+ * @param input 열려있는 conf_file
+ */
+void	ConfParser::makeHttpBlock(std::ifstream& input){
+	if (http_store_.size() != 0)
+		throw(std::runtime_error("there are two http block!!"));
+	HttpBlock new_block;
+	http_store_.push_back(new_block);
+	parseUntilEnd(input, line_len_, new_block);
 }
+
+/**
+ * @brief OtherBlock을 만드는 함수
+ *
+ * @param input 열려있는 conf_file
+ */
+void	ConfParser::makeOtherBlock(std::ifstream& input){
+	OtherBlock new_block;
+	other_store_.push_back(new_block);
+	parseUntilEnd(input, line_len_, new_block);
+}
+
+
+
 
 
