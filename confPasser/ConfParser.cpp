@@ -2,8 +2,8 @@
 
 /* public */
 
-ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0), root_(false), index_(false), autoindex_(false), error_page_(false){}
-
+// ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0), root_(false), index_(false), autoindex_(false), error_page_(false){}
+ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0){}
 ConfParser::~ConfParser(){}
 
 /**
@@ -116,7 +116,7 @@ void  ConfParser::parseConf(std::ifstream& input){
 		else // {가 나오는 경우
 			makeBlock(line, input);
 	}
-
+}
 
 /**
  * @brief HTTP 블록을 만드는 함수

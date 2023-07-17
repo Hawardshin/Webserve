@@ -1,6 +1,6 @@
 # include "HttpBlock.hpp"
-HttpBlock::HttpBlock() : root_(false), index_(false), autoindex_(false), error_page_(false){}
-
+// HttpBlock::HttpBlock() : root_(false), index_(false), autoindex_(false), error_page_(false){}
+HttpBlock::HttpBlock(){}
 HttpBlock::~HttpBlock(){}
 
 

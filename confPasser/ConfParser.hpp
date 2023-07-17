@@ -24,10 +24,10 @@ private:
 	std::string	file_name_;
 
 	int		line_len_;
-	bool	root_;
-	bool	index_;
-	bool	autoindex_;
-	bool	error_page_;
+	// bool	root_;
+	// bool	index_;
+	// bool	autoindex_;
+	// bool	error_page_;
 };
 
 #endif

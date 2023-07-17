@@ -4,9 +4,8 @@
  * default listen은 8000번으로 했습니다.
  *
  */
-ServBlock::ServBlock() : root_(false), index_(false), autoindex_(false), error_page_(false),server_name_(""), listen_(8000),default_server_(false) {
-
-}
+// ServBlock::ServBlock() : root_(false), index_(false), autoindex_(false), error_page_(false),server_name_(""), listen_(8000),default_server_(false) {}
+ServBlock::ServBlock() {}
 ServBlock::~ServBlock(){
 
 }
@@ -36,15 +35,22 @@ void	ServBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 	switch(check_blockname(block_name)){
 		case HTTP :throw(std::runtime_error("this is not GOOD HTTP block"));
 		case SERVER : throw(std::runtime_error("this is not GOOD SERVER block"));
-		case LOCATION : makeLocBlock(input, line_len_);
+		case LOCATION : makeLocBlock(input, line_len_, block_name);
 			break;
 		case OTHER : makeOtherBlock(input, line_len_);
 			break;
 	}
 }
 
-void	ServBlock::makeLocBlock(std::ifstream& input, int& line_len_){
-	LocBlock new_block;
+void	ServBlock::makeLocBlock(std::ifstream& input, int& line_len_, std::string& block_name){
+	// std::cout << "---Loc blk name : |" << block_name << "|\n";
+	// std::cout << block_name.find("location") << "\n";
+	if (block_name == "location")
+		throw(std::runtime_error("location block Don't have pathinfo"));
+	std::string loc_info =  block_name.substr(8);
+	trimSidesSpace(loc_info);
+	// std::cout << "|"<< loc_info << "|\n";
+	LocBlock new_block(loc_info);
 	loc_store_.push_back(new_block);
 	parseUntilEnd(input, line_len_, new_block);
 }

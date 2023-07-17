@@ -80,7 +80,7 @@ e_block	check_blockname(std::string block_name){
 		return (HTTP);
 	if (block_name == "server")
 		return (SERVER);
-	if (block_name == "location")
+	if (block_name.find("location") != std::string::npos)
 		return (LOCATION);
 	return (OTHER);
 }

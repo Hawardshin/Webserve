@@ -32,10 +32,10 @@ private:
 	std::vector<ServBlock> serv_store_;
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> http_directives_;
-	bool root_;
-	bool index_;
-	bool autoindex_;
-	bool error_page_;
+	// bool root_;
+	// bool index_;
+	// bool autoindex_;
+	// bool error_page_;
 };
 
 #endif
