@@ -31,12 +31,12 @@ void	ServBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 	std::cout << "5. |" << block_name << "|"<< std::endl;
 	if (pos != line.size() - 1 || block_name == "")
 		throw(std::runtime_error("this is not block"));
-	switch(check_blockname(block_name)){
+	switch(checkBlockName(block_name)){
 		case HTTP :throw(std::runtime_error("this is not GOOD HTTP block"));
 		case SERVER : throw(std::runtime_error("this is not GOOD SERVER block"));
 		case LOCATION : makeLocBlock(input, line_len_, block_name);
 			break;
-		case OTHER : makeOtherBlock(input, line_len_);
+		case OTHERBLOCK : makeOtherBlock(input, line_len_);
 			break;
 	}
 }

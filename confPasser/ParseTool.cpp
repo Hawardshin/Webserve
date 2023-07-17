@@ -81,14 +81,26 @@ void  extractDirective(std::string line, std::map<std::string, std::string>& dir
  * @param block_name 블록 이름
  * @return e_block ENUM 값으로 리턴해준다.
  */
-e_block	check_blockname(std::string block_name){
+e_block	checkBlockName(const std::string& block_name){
 	if (block_name == "http")
 		return (HTTP);
 	if (block_name == "server")
 		return (SERVER);
 	if (block_name.find("location") != std::string::npos)
 		return (LOCATION);
-	return (OTHER);
+	return (OTHERBLOCK);
+}
+
+e_method checkMethodName(const std::string &block_name){
+	if (block_name == "GET")
+		return GET;
+	if (block_name == "POST")
+		return POST;
+	if (block_name == "PUT")
+		return PUT;
+	if (block_name == "DELETE")
+		return DELETE;
+	return OTHER_METHOD;
 }
 
 void  checkOverFlow(double d){
@@ -114,7 +126,7 @@ void	splitBySpace(std::vector<int>& store, std::string line, char delimiter){
 	double ret;
 	while (getline(ss, temp, delimiter)){
 		ret = 0;
-		for (std::string::iterator it= temp.begin(); it != temp.end(); it++){
+		for (std::string::iterator it = temp.begin(); it != temp.end(); it++){
 			if (*it < '0' || *it > '9')
 				throw(std::invalid_argument("NUMBER_INVALID_FORMAT"));
 			ret *= 10;

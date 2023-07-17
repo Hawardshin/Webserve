@@ -7,12 +7,38 @@ std::map<std::string, std::string>& LocBlock::getDirStore(){
 	return (loc_directives_);
 }
 
+
+/**
+ * @brief location block에서는 limit_except 블록만 올 수 있습니다.
+ *
+ * @param line 반드시 "limit_except GET POST HEAD {" 이런 느낌으로 옵니다.
+ * @param input 열어둔 파일시스템
+ * @param line_len_ conf파일 현재까지 읽은 길이
+ *
+ * @warning limit_except 에 올 수 있는 메서드는 임의롤 줄였습니다.
+ * 추가적으로 deny all이외에 다른 인자는 받지 않습니다.
+ */
 void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_){
+	std::string key,value;
 	if (line.find("limit_except") == std::string::npos)
 		throw(std::runtime_error("CAN't Make block in Loc block!(only allow limit_except)"));
-	// std::cout << "|"<< line <<"|" <<line.substr(12) << "|\n";
 	splitBySpace(deny_methods_, line.substr(12), ' ');
-	// while (getline())
+	for (std::vector<std::string>::iterator it = deny_methods_.begin(); it != deny_methods_.end(); it++){
+		if (checkMethodName(*it) == OTHER_METHOD)
+			throw(std::runtime_error("THIS IS NOT ALLOW METHOD!"));
+	}
+	while (getline(input, line)){
+		trimComment(line);
+		trimSidesSpace(line);
+		line_len_++;
+		if (line == "")
+			continue;
+		if (line == "}")
+			break;
+		splitKeyVal(key, value, line);
+		if (key != "deny" ||  value != "all")
+			throw(std::runtime_error("ERROR it must only deny all"));
+	}
 }
 
 /* private */

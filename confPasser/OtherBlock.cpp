@@ -17,12 +17,12 @@ void	OtherBlock::makeBlock(std::string line, std::ifstream& input, int& line_len
 	std::cout << "5. |" << block_name << "|"<< std::endl;
 	if (pos != line.size() - 1 || block_name == "")
 		throw(std::runtime_error("this is not block"));
-	switch(check_blockname(block_name)){
+	switch(checkBlockName(block_name)){
 		case HTTP :throw(std::runtime_error("this is not GOOD HTTP block"));
 		case SERVER : throw(std::runtime_error("HERE IS OTHERBLOCK!"));
 			break;
 		case LOCATION : throw(std::runtime_error("this is not LOC block"));
-		case OTHER : makeOtherBlock(input, line_len_);
+		case OTHERBLOCK : makeOtherBlock(input, line_len_);
 			break;
 	}
 }

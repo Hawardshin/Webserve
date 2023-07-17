@@ -64,12 +64,12 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 	(void)line_len;
 	if (pos != line.size() - 1 || block_name == "")
 		throw(std::runtime_error("block name in ERROR"));
-	switch(check_blockname(block_name)){
+	switch(checkBlockName(block_name)){
 		case HTTP : makeHttpBlock(input);
 			break;
 		case SERVER : throw(std::runtime_error("You need to create an HTTP block first.(server)"));
 		case LOCATION : throw(std::runtime_error("You need to create an HTTP block first.(location)"));
-		case OTHER : makeOtherBlock(input);
+		case OTHERBLOCK : makeOtherBlock(input);
 			break;
 	}
 }
