@@ -4,8 +4,7 @@
  * default listen은 8000번으로 했습니다.
  *
  */
-// ServBlock::ServBlock() : root_(false), index_(false), autoindex_(false), error_page_(false),server_name_(""), listen_(8000),default_server_(false) {}
-ServBlock::ServBlock() {}
+ServBlock::ServBlock() : root_(""), autoindex_(false), client_max_body_size_(-1), error_page_(""), upload_store_(""), server_name_(""), listen_(8000), default_server_(false){}
 ServBlock::~ServBlock(){
 
 }

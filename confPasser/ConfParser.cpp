@@ -2,7 +2,6 @@
 
 /* public */
 
-// ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0), root_(false), index_(false), autoindex_(false), error_page_(false){}
 ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0){}
 ConfParser::~ConfParser(){}
 

@@ -1,6 +1,5 @@
 # include "HttpBlock.hpp"
-// HttpBlock::HttpBlock() : root_(false), index_(false), autoindex_(false), error_page_(false){}
-HttpBlock::HttpBlock(){}
+HttpBlock::HttpBlock() : root_(""), autoindex_(false), client_max_body_size_(-1), error_page_(""){}
 HttpBlock::~HttpBlock(){}
 
 

@@ -23,11 +23,7 @@ private:
 	std::map<std::string, std::string>	root_directives_;//key : derective, value : value
 	std::string	file_name_;
 
-	int		line_len_;
-	// bool	root_;
-	// bool	index_;
-	// bool	autoindex_;
-	// bool	error_page_;
+	int	line_len_;
 };
 
 #endif
