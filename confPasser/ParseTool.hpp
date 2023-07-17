@@ -25,6 +25,16 @@ e_block	check_blockname(std::string block_name);
 /**
  * @brief 재귀적으로 괄호가 닫힐때까지 탐색하는 함수
  * 탬플릿으로 블록을 받고 각 블록 내부의 함수를 활용해서 재귀적으로 타고 갑니다.
+ * @details [블록 파싱 규칙]
+ * 1. 블록은 "server {"  이런식으로 생긴 것만 생각합니다.
+ * [ex]
+ * server
+ * # hi
+ * # hello
+ * {
+ * }
+ * 이런식으로 되있는 경우는 아에 안되는 것으로 처리하겠습니다.
+ * ex : server{location{}} 이렇게 오는것도 안 합니다.
  *
  * @tparam T (HttpBlock, ServBlock, OtherBlock, locBlock) 클래스가 들어옵니다.
  * @warning 호출 하기 전에 T block 안에 makeBlock() 함수가 있는지 확인합니다.
@@ -59,7 +69,8 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 		else // {가 나오는 경우
 			block.makeBlock(line, input, line_len_);
 	}
-	throw(std::runtime_error("NOT CLOSE the {}"));
+	if (input.eof() == false) //시작할 때 괄호가 모두 닫혀있지 않다면
+		throw(std::runtime_error("NOT CLOSE the {}"));
 }
 
 void  checkOverFlow(double d);

@@ -12,7 +12,7 @@ public:
 	std::map<std::string, std::string>& getDirStore();
 	void	confPathInit(char* argv);
 	void	confInit();
-	void	makeBlock(std::string line, std::ifstream& input);
+	void	makeBlock(std::string line, std::ifstream& input, int& line_len);
 
 private:
 	void	parseConf(std::ifstream& input);

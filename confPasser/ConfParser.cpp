@@ -39,14 +39,14 @@ void  ConfParser::confInit(){
 	if (!conf_file.is_open())
 		throw std::invalid_argument("Error : there is no conf_file\n");
 	try{
-		parseConf(conf_file);
-	}
-	catch(std::exception &e){
+		parseUntilEnd(conf_file, line_len_, *this);
+	} catch(std::exception &e){
 		std::cerr << file_name_ << " : " << line_len_ << "\n";
 		std::cerr << e.what() << "\n";
 		conf_file.close();
 		throw(std::invalid_argument(""));
 	}
+	conf_file.close();
 }
 
 /**
@@ -56,12 +56,12 @@ void  ConfParser::confInit(){
  * @param line "블록 명{" 이렇게 들어온 한 줄
  * @param input 열어 ifstream으로 열어둔 conf파일
  */
-void	ConfParser::makeBlock(std::string line, std::ifstream& input){
+void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len){
 	size_t pos = line.find('{');
 	std::string block_name = line.substr(0, pos);
 	trimSidesSpace(block_name);
 	std::cout << "5. |" << block_name << "|"<< std::endl;;
-	(void)input;
+	(void)line_len;
 	if (pos != line.size() - 1 || block_name == "")
 		throw(std::runtime_error("block name in ERROR"));
 	switch(check_blockname(block_name)){
@@ -77,45 +77,6 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input){
 
 
 /* private */
-
-/**
- * @brief 메인로직 conf파일을 하나의 파일에 담아줍니다.
- * @details [블록 파싱 규칙]
- * 1. 블록은 "server {"  이런식으로 생긴 것만 생각합니다.
- * [ex]
-  server
-  # hi
-  # hello
-  {
-  }
-  이런식으로 되있는 경우는 아에 안되는 것으로 처리하겠습니다.
-	ex : server{location{}} 이렇게 오는것도 안 합니다.
-	 @warning runtime_error를 던집니다.
- * @param input ifstream으로 연 파일
- */
-void  ConfParser::parseConf(std::ifstream& input){
-	std::string line;
-	std::string directive = "";
-	while (std::getline(input, line)){
-		trimComment(line);
-		trimSidesSpace(line);
-		line_len_++;
-		if (line == "")
-			continue;
-		size_t dir_pos_a = line.find('{');
-		size_t dir_pos_b = line.find(';');
-		size_t dir_pos_c = line.find('}');
-		std::cout << "2. line|"<< line << "|" << std::endl;
-		if (dir_pos_c != std::string::npos || \
-					(dir_pos_a == std::string::npos && dir_pos_b == std::string::npos)  || \
-					(dir_pos_a != std::string::npos && dir_pos_b != std::string::npos))
-			throw(std::runtime_error(" [ERROR in Nginx conf_file]"));
-		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
-				extractDirective(line.substr(0, dir_pos_b),root_directives_);
-		else // {가 나오는 경우
-			makeBlock(line, input);
-	}
-}
 
 /**
  * @brief HTTP 블록을 만드는 함수
@@ -141,8 +102,4 @@ void	ConfParser::makeOtherBlock(std::ifstream& input){
 	other_store_.push_back(new_block);
 	parseUntilEnd(input, line_len_, new_block);
 }
-
-
-
-
 
