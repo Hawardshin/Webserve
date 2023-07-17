@@ -42,13 +42,10 @@ void	ServBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 }
 
 void	ServBlock::makeLocBlock(std::ifstream& input, int& line_len_, std::string& block_name){
-	// std::cout << "---Loc blk name : |" << block_name << "|\n";
-	// std::cout << block_name.find("location") << "\n";
 	if (block_name == "location")
 		throw(std::runtime_error("location block Don't have pathinfo"));
 	std::string loc_info =  block_name.substr(8);
 	trimSidesSpace(loc_info);
-	// std::cout << "|"<< loc_info << "|\n";
 	LocBlock new_block(loc_info);
 	loc_store_.push_back(new_block);
 	parseUntilEnd(input, line_len_, new_block);

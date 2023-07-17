@@ -7,13 +7,12 @@
 # include <vector>
 # include <map>
 # include <algorithm>
-
-
+# include <cmath>
 typedef enum blocktype{
 		HTTP,
 		SERVER,
 		LOCATION,
-		OTHER,
+		OTHER
 }e_block;
 
 void	trimSidesSpace(std::string &line);
@@ -25,7 +24,7 @@ e_block	check_blockname(std::string block_name);
 
 /**
  * @brief 재귀적으로 괄호가 닫힐때까지 탐색하는 함수
-	탬플릿으로 블록을 받고 각 블록 내부의 함수를 활용해서 재귀적으로 타고 갑니다.
+ * 탬플릿으로 블록을 받고 각 블록 내부의 함수를 활용해서 재귀적으로 타고 갑니다.
  *
  * @tparam T (HttpBlock, ServBlock, OtherBlock, locBlock) 클래스가 들어옵니다.
  * @warning 호출 하기 전에 T block 안에 makeBlock() 함수가 있는지 확인합니다.
@@ -62,5 +61,9 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 	}
 	throw(std::runtime_error("NOT CLOSE the {}"));
 }
+
+void  checkOverFlow(double d);
+void	splitBySpace(std::vector<std::string>& store, std::string line, char delimiter);
+void	splitBySpace(std::vector<int>& store, std::string line, char delimiter);
 
 #endif
