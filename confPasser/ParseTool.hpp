@@ -85,7 +85,11 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
 				extractDirective(line.substr(0, dir_pos_b), block.getDirStore());
 		else // {가 나오는 경우
+		{
 			block.makeBlock(line, input, line_len_);
+			if (input.eof() == true)
+				throw(std::runtime_error("this is not close {"));
+		}
 	}
 	if (input.eof() == false) //시작할 때 괄호가 모두 닫혀있지 않다면
 		throw(std::runtime_error("NOT CLOSE the {}"));

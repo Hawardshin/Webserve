@@ -24,6 +24,7 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 		throw(std::runtime_error("CAN't Make block in Loc block!(only allow limit_except)"));
 	splitBySpace(deny_methods_, line.substr(12), ' ');
 	for (std::vector<std::string>::iterator it = deny_methods_.begin(); it != deny_methods_.end(); it++){
+		std::cout <<"-----------------" <<*it << "\n";
 		if (checkMethodName(*it) == OTHER_METHOD)
 			throw(std::runtime_error("THIS IS NOT ALLOW METHOD!"));
 	}

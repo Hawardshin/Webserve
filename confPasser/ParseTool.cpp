@@ -96,6 +96,8 @@ e_method checkMethodName(const std::string &block_name){
 		return GET;
 	if (block_name == "POST")
 		return POST;
+	if (block_name == "HEAD")
+		return HEAD;
 	if (block_name == "PUT")
 		return PUT;
 	if (block_name == "DELETE")
