@@ -14,11 +14,9 @@ Kserver::Kserver(char *port) {
   int num = 0;
   int i;
 
-  for (i=0; port[i] != '\0';i++)
-  {
+  for (i=0; port[i] != '\0';i++){
     num *= 10;
-    if (!isdigit(port[i]))
-    {
+    if (!isdigit(port[i])){
       port_ = -1;
       return ;
     }
@@ -55,7 +53,6 @@ void  Kserver::Server_init(){
  *
  */
 void  Kserver::sockAccept(){
-
   clnt_addrsz_ = sizeof(clnt_addr_);
   clnt_sockfd_ = accept(serv_sockfd_, (struct sockaddr *) &clnt_addr_, &clnt_addrsz_);
   if (clnt_sockfd_ == -1)
@@ -67,15 +64,13 @@ void  Kserver::sockAccept(){
  * @brief 메인로직 kqueue를 시작하고 무한 루프를 돌면서 이벤트를 감지->처리합니다.
  *
  */
- void  Kserver::startWorking()
- {
-  kqueue_.KqueueStart(serv_sockfd_);
-  while (1)
-  {
-    event_list_size_ = kqueue_.detectEvent(event_list_);
-    handleEvents();
-  }
- }
+void  Kserver::startWorking(){
+	kqueue_.KqueueStart(serv_sockfd_);
+	while (1){
+		event_list_size_ = kqueue_.detectEvent(event_list_);
+		handleEvents();
+	}
+}
 
 /**
  * @brief use sock() to server socket
@@ -178,8 +173,7 @@ void  Kserver::sockReadable(struct kevent *cur_event)
     std::cout << "clnt shoot eof\n";
     disconnectClient(cur_event->ident);
   }
-  else
-  {
+  else{
     buff_[rlen] = '\0';
     clnt_store_[cur_event->ident] += buff_;
     std::cout << "FROM CLIENT NUM " << cur_event->ident << ": " << clnt_store_[cur_event->ident] << "\n";
