@@ -2,11 +2,18 @@
 
 
 LocBlock::LocBlock(std::string loc_info) :root_(""), autoindex_(false), client_max_body_size_(-1), error_page_(""), upload_store_(""), loc_info_(loc_info), return_code_(-1), return_string_(""), is_limit_except_(false), cgi_pass_(""){}
+
 LocBlock::~LocBlock(){}
+
+/**
+ * @brief loc_directives_ 반환
+ *
+ * @note 템플릿 사용 위해서 반드시 필요
+ * @return std::map<std::string, std::string>& 인자로 받아서 변경시키기 위해서 레퍼런스 타입으로 반환함
+ */
 std::map<std::string, std::string>& LocBlock::getDirStore(){
 	return (loc_directives_);
 }
-
 
 /**
  * @brief location block에서는 limit_except 블록만 올 수 있습니다.
@@ -22,7 +29,7 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 	std::string key,value;
 	if (line.find("limit_except") == std::string::npos)
 		throw(std::runtime_error("CAN't Make block in Loc block!(only allow limit_except)"));
-	splitBySpace(deny_methods_, line.substr(12), ' ');
+	splitAndStore(deny_methods_, line.substr(12), ' ');
 	for (std::vector<std::string>::iterator it = deny_methods_.begin(); it != deny_methods_.end(); it++){
 		std::cout <<"-----------------" <<*it << "\n";
 		if (checkMethodName(*it) == OTHER_METHOD)
@@ -31,6 +38,7 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 	while (getline(input, line)){
 		trimComment(line);
 		trimSidesSpace(line);
+		line = line.substr(0, line.find(';'));
 		line_len_++;
 		if (line == "")
 			continue;

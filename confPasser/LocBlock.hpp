@@ -1,7 +1,6 @@
 #ifndef LOCBLOCK_HPP
 # define LOCBLOCK_HPP
 
-
 # include "ParseTool.hpp"
 # include "OtherBlock.hpp"
 /**
@@ -17,8 +16,8 @@ class LocBlock{
 public:
 	LocBlock(std::string loc_info);
 	~LocBlock();
-	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 	std::map<std::string, std::string>& getDirStore();
+	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 private:
 	LocBlock();
 	std::map<std::string, std::string> loc_directives_;

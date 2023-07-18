@@ -75,7 +75,6 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 }
 
 
-
 /* private */
 
 /**

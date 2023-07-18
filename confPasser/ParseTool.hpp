@@ -32,13 +32,21 @@ typedef enum methodtype{
 // UNLOCK,
 // MKCOL //디렉토리 만드는 method
 
+e_block	checkBlockName(const std::string& block_name);
+e_method checkMethodName(const std::string &block_name);
+void  checkOverFlow(double d);
 
 void	trimSidesSpace(std::string &line);
 void	trimComment(std::string &line);
+
 void	splitKeyVal(std::string& key, std::string &value, std::string &line);
+void	splitAndStore(std::vector<std::string>& store, std::string line, char delimiter);
+void	splitAndStore(std::vector<int>& store, std::string line, char delimiter);
+
 void  extractDirective(std::string line, std::map<std::string, std::string>& directives_map);
-e_block	checkBlockName(const std::string& block_name);
-e_method checkMethodName(const std::string &block_name);
+
+
+
 
 /**
  * @brief [파싱에서 가장 핵심 함수] 재귀적으로 괄호가 닫힐때까지 탐색하는 함수
@@ -84,8 +92,7 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 			throw(std::runtime_error(" [ERROR in Nginx conf_file]"));
 		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
 				extractDirective(line.substr(0, dir_pos_b), block.getDirStore());
-		else // {가 나오는 경우
-		{
+		else{ // {가 나오는 경우
 			block.makeBlock(line, input, line_len_);
 			if (input.eof() == true)
 				throw(std::runtime_error("this is not close {"));
@@ -94,9 +101,5 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 	if (input.eof() == false) //시작할 때 괄호가 모두 닫혀있지 않다면
 		throw(std::runtime_error("NOT CLOSE the {}"));
 }
-
-void  checkOverFlow(double d);
-void	splitBySpace(std::vector<std::string>& store, std::string line, char delimiter);
-void	splitBySpace(std::vector<int>& store, std::string line, char delimiter);
 
 #endif

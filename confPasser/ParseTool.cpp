@@ -2,6 +2,56 @@
 # include "OtherBlock.hpp"
 
 /**
+ * @brief 어떤 블록인지 리턴해주는 함수
+ *
+ * @details switch 문 쓰려고 만들었어요
+ * @param block_name 블록 이름
+ * @return e_block ENUM 값으로 리턴해준다.
+ */
+e_block	checkBlockName(const std::string& block_name){
+	if (block_name == "http")
+		return (HTTP);
+	if (block_name == "server")
+		return (SERVER);
+	if (block_name.find("location") != std::string::npos)
+		return (LOCATION);
+	return (OTHERBLOCK);
+}
+
+/**
+ * @brief 메소드 종류를 리턴해주는 함수
+ *
+ * @param block_name 메소드의 이름을 string으로 받습니다.
+ * @return e_method enum값을 가집니다.
+ * @note GET, POST, HEAD, PUT, DELETE, OTHER_METHOD
+ */
+e_method checkMethodName(const std::string &block_name){
+	if (block_name == "GET")
+		return GET;
+	if (block_name == "POST")
+		return POST;
+	if (block_name == "HEAD")
+		return HEAD;
+	if (block_name == "PUT")
+		return PUT;
+	if (block_name == "DELETE")
+		return DELETE;
+	return OTHER_METHOD;
+}
+
+/**
+ * @brief double값으로 인자를 받는 int oveflow 체크 함수
+ *
+ * @param d 체크하고자 하는 double값
+ */
+void  checkOverFlow(double d){
+  int a = d;
+  if (static_cast<double> (a) != std::floor(d))
+    throw std::overflow_error("TOO_LARGENUM_ERROR");
+}
+
+
+/**
  * @brief 들어온 문자열의 양옆에 있는 space와 tab을 지워주는 함수
  *
  * @param line 변경할 문자열
@@ -59,59 +109,13 @@ void	splitKeyVal(std::string& key, std::string &value, std::string &line){
 }
 
 /**
- * @brief 앞뒤로 스페이스바 삭제해주고 Directive를 추출합니다.
- * 이후 정상적인 코드라고 생각하고 그 값을 파싱해줍니다.
- * 여러개인 경우 space로 띄워져 있습니다.
+ * @brief string을 split해서 string vector에 담아주는 함수
  *
- * @param line ';'로 잘린 문자열이 들어옵니다.
- * @param directives_map-클래스에서 directive들을 저장할 저장소
+ * @param store 저장할 벡터
+ * @param line 자를 한줄
+ * @param delimiter 구분자
  */
-void  extractDirective(std::string line, std::map<std::string, std::string>& directives_map){
-
-	std::string key, value;
-	splitKeyVal(key, value, line);
-	directives_map[key] = value;
-}
-
-
-/**
- * @brief 어떤 블록인지 리턴해주는 함수
- *
- * @details switch 문 쓰려고 만들었어요
- * @param block_name 블록 이름
- * @return e_block ENUM 값으로 리턴해준다.
- */
-e_block	checkBlockName(const std::string& block_name){
-	if (block_name == "http")
-		return (HTTP);
-	if (block_name == "server")
-		return (SERVER);
-	if (block_name.find("location") != std::string::npos)
-		return (LOCATION);
-	return (OTHERBLOCK);
-}
-
-e_method checkMethodName(const std::string &block_name){
-	if (block_name == "GET")
-		return GET;
-	if (block_name == "POST")
-		return POST;
-	if (block_name == "HEAD")
-		return HEAD;
-	if (block_name == "PUT")
-		return PUT;
-	if (block_name == "DELETE")
-		return DELETE;
-	return OTHER_METHOD;
-}
-
-void  checkOverFlow(double d){
-  int a = d;
-  if (static_cast<double> (a) != std::floor(d))
-    throw std::overflow_error("TOO_LARGENUM_ERROR");
-}
-
-void	splitBySpace(std::vector<std::string>& store, std::string line, char delimiter){
+void	splitAndStore(std::vector<std::string>& store, std::string line, char delimiter){
 	trimSidesSpace(line.erase(line.size() - 1));
   std::stringstream ss(line);
   std::string temp;
@@ -121,7 +125,15 @@ void	splitBySpace(std::vector<std::string>& store, std::string line, char delimi
 	}
 }
 
-void	splitBySpace(std::vector<int>& store, std::string line, char delimiter){
+/**
+ * @brief string을 split해서 int vector에 담아주는 함수
+ *
+ * @param store 저장할 벡터
+ * @param line 자를 한줄
+ * @param delimiter 구분자
+ * @warning 숫자가 아닌경우와 overflow에 대해서 에러를 처리합니다.
+ */
+void	splitAndStore(std::vector<int>& store, std::string line, char delimiter){
 	trimSidesSpace(line);
 	std::stringstream ss(line);
   std::string temp;
@@ -138,3 +150,19 @@ void	splitBySpace(std::vector<int>& store, std::string line, char delimiter){
 		store.push_back((int)ret);
 	}
 }
+
+/**
+ * @brief 앞뒤로 스페이스바 삭제해주고 Directive를 추출합니다.
+ * 이후 정상적인 코드라고 생각하고 그 값을 파싱해줍니다.
+ * 여러개인 경우 space로 띄워져 있습니다.
+ *
+ * @param line ';'로 잘린 문자열이 들어옵니다.
+ * @param directives_map-클래스에서 directive들을 저장할 저장소
+ */
+void  extractDirective(std::string line, std::map<std::string, std::string>& directives_map){
+
+	std::string key, value;
+	splitKeyVal(key, value, line);
+	directives_map[key] = value;
+}
+
