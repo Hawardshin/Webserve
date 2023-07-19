@@ -9,7 +9,8 @@ SRCS = main.cpp	\
 			 LocBlock.cpp \
 			 ServBlock.cpp \
 			 ParseTool.cpp \
-			 OtherBlock.cpp
+			 OtherBlock.cpp \
+			 BaseBlock.cpp
 
 
 RM = rm -rf

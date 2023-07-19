@@ -1,7 +1,7 @@
 #include "LocBlock.hpp"
 
 
-LocBlock::LocBlock(std::string loc_info) :root_(""), autoindex_(false), client_max_body_size_(-1), error_page_(""), upload_store_(""), loc_info_(loc_info), return_code_(-1), return_string_(""), is_limit_except_(false), cgi_pass_(""){}
+LocBlock::LocBlock(std::string loc_info) : upload_store_(""), loc_info_(loc_info), return_code_(-1), return_string_(""), is_limit_except_(false), cgi_pass_(""){}
 
 LocBlock::~LocBlock(){}
 
