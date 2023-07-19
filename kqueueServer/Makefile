@@ -1,6 +1,5 @@
 CC = c++
-CFLAGS = -std=c++98 -Wall -Wextra -Werror
-CFLAGS += -g3
+CFLAGS = -std=c++98 -Wall -Wextra -Werror -g3
 
 NAME = Kserver
 

@@ -13,16 +13,15 @@
 /**
  * @brief kqueue에 이벤트를 변경하거나 현재 이벤트가 발생했는지 감지할 수 있습니다.
  */
-class Kqueue
-{
+class Kqueue{
 public:
-	Kqueue(){}
-	~Kqueue() {close(kqueue_fd_);}
+	Kqueue();
+	~Kqueue();
 	void  KqueueStart(const int &serv_sock);
 	void ChangeEvent(int ident, int filter, int flags, void *udata);
 	int  detectEvent(struct kevent *event_list);
 private:
-	std::vector<struct kevent> change_list_;//등록할 이벤트만 담아주고 kqueue에 등록했다면, clear() 해서 비워줍니다.
+	std::vector<struct kevent> change_list_; //등록할 이벤트만 담아주고 kqueue에 등록했다면, clear() 해서 비워줍니다.
 	int kqueue_fd_;
 };
 
