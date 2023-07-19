@@ -19,7 +19,7 @@ std::map<std::string, std::string>& ConfParser::getDirStore(){
  *
  * @param argv 파일의 경로
  */
-void	ConfParser::confPathInit(char* argv){
+void	ConfParser::confPathInit(char* path){
 	file_name_ = argv;
 }
 

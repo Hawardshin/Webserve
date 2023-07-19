@@ -15,7 +15,7 @@ public:
 	~ConfParser();
 
 	std::map<std::string, std::string>& getDirStore();
-	void	confPathInit(char* argv);
+	void	confPathInit(char* path);
 	void	confInit();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len);
 
