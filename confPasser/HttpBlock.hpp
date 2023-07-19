@@ -2,7 +2,7 @@
 # define HTTPBLOCK_HPP
 #include "ServBlock.hpp"
 # include "IBlock.hpp"
-# include "BaseBlock.hpp"
+# include "HttpBase.hpp"
 /**
  * @brief HTTP block의 정보를 담고있는 블록. 내부에 서버 블록들을 가지고 있다.
  * @details [서버 네임이 둘 이상 일치하는 경우 우선순위]
@@ -31,7 +31,7 @@
  * - 브라우저에서는 이 오류를 올바르게 표시할 수 없습니다. 0으로 설정하면 *`size`*클라이언트 요청 본문 크기 확인이 비활성화됩니다.
  *
  */
-class HttpBlock : public IBlock, public BaseBlock{
+class HttpBlock : public IBlock, public HttpBase{
 public:
 	HttpBlock();
 	~HttpBlock();

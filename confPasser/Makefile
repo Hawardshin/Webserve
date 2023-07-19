@@ -10,7 +10,7 @@ SRCS = main.cpp	\
 			 ServBlock.cpp \
 			 ParseTool.cpp \
 			 OtherBlock.cpp \
-			 BaseBlock.cpp
+			 HttpBase.cpp
 
 
 RM = rm -rf

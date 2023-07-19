@@ -2,7 +2,7 @@
 # define SERVBLOCK_HPP
 # include "LocBlock.hpp"
 # include "IBlock.hpp"
-# include "BaseBlock.hpp"
+# include "HttpBase.hpp"
 /**
  * @brief Server Block
  * location block을 담고있다.
@@ -22,7 +22,7 @@
  * server_name : port번호가 일치한다면  http헤더에 host와 server_name과 비교합니다.
  * upload_store : 출력 파일을 저장할 디렉토리를 지정합니다. (server과 location)
  */
-class ServBlock : public IBlock, public BaseBlock{
+class ServBlock : public IBlock, public HttpBase{
 public:
 	ServBlock();
 	~ServBlock();

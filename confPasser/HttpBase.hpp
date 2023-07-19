@@ -1,10 +1,10 @@
-#ifndef BASEBLOCK_HPP
-# define BASEBLOCK_HPP
+#ifndef HTTPBASE_HPP
+# define HTTPBASE_HPP
 # include "ParseTool.hpp"
-class BaseBlock
+class HttpBase
 {
-	public : BaseBlock();
-	virtual ~BaseBlock();
+	public : HttpBase();
+	virtual ~HttpBase();
 protected :
 	std::string root_;
 	std::vector<std::string> index_;
