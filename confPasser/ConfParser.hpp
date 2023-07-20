@@ -18,7 +18,7 @@ public:
 	void	confPathInit(char* argv);
 	void	confInit();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len);
-
+	void	printAllBlock();//testFunction It will Delete
 private:
 	void	makeHttpBlock(std::ifstream& input);
 	void	makeOtherBlock(std::ifstream& input);
@@ -27,6 +27,7 @@ private:
 	std::vector<HttpBlock>	http_store_;
 	std::vector<OtherBlock>	other_store_;
 	std::map<std::string, std::string>	root_directives_;//key : derective, value : value
+
 };
 
 #endif

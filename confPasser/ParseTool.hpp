@@ -81,7 +81,7 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 		size_t dir_pos_a = line.find('{');
 		size_t dir_pos_b = line.find(';');
 		size_t dir_pos_c = line.find('}');
-		std::cout << "2. line|"<< line << "|" << std::endl;
+		// std::cout << "2. line|"<< line << "|" << std::endl;
 		if (dir_pos_c != std::string::npos ){ //괄호가 닫히는 경우 재귀 종료
 			if (line.size() != 1)
 				throw(std::runtime_error(" '{' is only line by line"));
@@ -91,8 +91,12 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 					(dir_pos_a != std::string::npos && dir_pos_b != std::string::npos))
 			throw(std::runtime_error(" [ERROR in Nginx conf_file]"));
 		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
+		{
 				extractDirective(line.substr(0, dir_pos_b), block.getDirStore());
+				// block.printAllBlock();
+		}
 		else{ // {가 나오는 경우
+			std::cout << "MAKE BLOCK" << line << "\n";
 			block.makeBlock(line, input, line_len_);
 			if (input.eof() == true)
 				throw(std::runtime_error("this is not close {"));

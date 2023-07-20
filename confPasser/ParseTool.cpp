@@ -99,13 +99,13 @@ void	splitKeyVal(std::string& key, std::string &value, std::string &line){
 	if (tmpos == std::string::npos)	//directive<space>value로 되어있어야 한다.
 		throw(std::runtime_error("ERROR DIRECTIVE key"));
 	key = line.substr(0,tmpos);
-	std::cout << "key:|"<< key << "|" << std::endl;
+	// std::cout << "key:|"<< key << "|" << std::endl;
 	for (; tmpos < line.size(); tmpos++){
 		if (line[tmpos] != ' ' && line[tmpos] != '\t')
 			break ;
 	}
 	value = line.substr(tmpos);
-	std::cout << "value:|"<< value << "|" << std::endl;
+	// std::cout << "value:|"<< value << "|" << std::endl;
 }
 
 /**
@@ -163,6 +163,7 @@ void  extractDirective(std::string line, std::map<std::string, std::string>& dir
 
 	std::string key, value;
 	splitKeyVal(key, value, line);
+	std::cout << "---extractKey:|" << key <<"|value:|" <<value << "|\n";
 	directives_map[key] = value;
 }
 

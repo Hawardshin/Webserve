@@ -32,7 +32,7 @@ void	ServBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 	size_t pos = line.find('{');
 	std::string block_name = line.substr(0, pos);
 	trimSidesSpace(block_name);
-	std::cout << "5. |" << block_name << "|"<< std::endl;
+	// std::cout << "5. |" << block_name << "|"<< std::endl;
 	if (pos != line.size() - 1 || block_name == "")
 		throw(std::runtime_error("this is not block"));
 	switch(checkBlockName(block_name)){
@@ -44,6 +44,19 @@ void	ServBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 			break;
 	}
 }
+void	ServBlock::printAllBlock(){
+	std::cout << "------------------IN ROOT Directives!!\n";
+	for (auto it : serv_directives_){
+		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
+	}
+
+	for (auto it : loc_store_)
+	{
+		std::cout << "----------------HTTP BLOCK INTO\n";
+		it.printAllBlock();
+	}
+}
+
 
 /**
  * @brief 전달된 경로에 대해서 어떤 규칙을 따라야 하는지 리턴해주는 함수입니다.
@@ -72,7 +85,7 @@ void	ServBlock::makeLocBlock(std::ifstream& input, int& line_len_, std::string& 
 	trimSidesSpace(loc_info);
 	LocBlock new_block(loc_info);
 	loc_store_.push_back(new_block);
-	parseUntilEnd(input, line_len_, new_block);
+	parseUntilEnd(input, line_len_, loc_store_[loc_store_.size() - 1]);
 }
 
 /**
@@ -85,5 +98,5 @@ void	ServBlock::makeLocBlock(std::ifstream& input, int& line_len_, std::string& 
 void	ServBlock::makeOtherBlock(std::ifstream& input, int& line_len_){
 	OtherBlock new_block;
 	other_store_.push_back(new_block);
-	parseUntilEnd(input, line_len_, new_block);
+	parseUntilEnd(input, line_len_, other_store_[other_store_.size() - 1]);
 }

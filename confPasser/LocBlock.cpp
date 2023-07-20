@@ -49,6 +49,14 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 			throw(std::runtime_error("ERROR it must only deny all"));
 	}
 }
+//this is cpp 11 for test.. I will delete it
+void	LocBlock::printAllBlock(){
+	std::cout << "LocBlock name is :|" <<loc_info_ << "\n";
+	for (auto it: loc_directives_){
+		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
+	}
+}
+
 
 /* private */
 LocBlock::LocBlock(){}

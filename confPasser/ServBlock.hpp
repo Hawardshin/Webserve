@@ -28,6 +28,7 @@ public:
 	~ServBlock();
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
+	void	printAllBlock();
 	LocBlock findLocBlock(std::string path);//http에서 path에 해당합니다.
 
 private:

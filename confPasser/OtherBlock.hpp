@@ -12,6 +12,7 @@ class OtherBlock{
 		~OtherBlock();
 		std::map<std::string, std::string>& getDirStore();
 		void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
+		void	printAllBlock();
 	private :
 		void	makeOtherBlock(std::ifstream& input, int& line_len_);
 		std::vector<OtherBlock> other_store_;

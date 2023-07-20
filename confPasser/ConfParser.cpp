@@ -60,7 +60,7 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 	size_t pos = line.find('{');
 	std::string block_name = line.substr(0, pos);
 	trimSidesSpace(block_name);
-	std::cout << "5. |" << block_name << "|"<< std::endl;;
+	// std::cout << "5. |" << block_name << "|"<< std::endl;
 	(void)line_len;
 	if (pos != line.size() - 1 || block_name == "")
 		throw(std::runtime_error("block name in ERROR"));
@@ -71,6 +71,19 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 		case LOCATION : throw(std::runtime_error("You need to create an HTTP block first.(location)"));
 		case OTHERBLOCK : makeOtherBlock(input);
 			break;
+	}
+}
+
+void	ConfParser::printAllBlock(){
+	std::cout << "------------------IN ROOT Directives!!\n";
+	for (auto it : root_directives_){
+		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
+	}
+
+	for (auto it : http_store_)
+	{
+		std::cout << "----------------HTTP BLOCK INTO\n";
+		it.printAllBlock();
 	}
 }
 
@@ -88,7 +101,7 @@ void	ConfParser::makeHttpBlock(std::ifstream& input){
 		throw(std::runtime_error("there are two http block!!"));
 	HttpBlock new_block;
 	http_store_.push_back(new_block);
-	parseUntilEnd(input, line_len_, new_block);
+	parseUntilEnd(input, line_len_, http_store_[0]);
 }
 
 /**
@@ -99,6 +112,6 @@ void	ConfParser::makeHttpBlock(std::ifstream& input){
 void	ConfParser::makeOtherBlock(std::ifstream& input){
 	OtherBlock new_block;
 	other_store_.push_back(new_block);
-	parseUntilEnd(input, line_len_, new_block);
+	parseUntilEnd(input, line_len_, other_store_[other_store_.size() - 1]);
 }
 

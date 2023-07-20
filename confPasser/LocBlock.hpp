@@ -18,6 +18,7 @@ public:
 	~LocBlock();
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
+	void	printAllBlock();
 private:
 	LocBlock();
 	std::map<std::string, std::string> loc_directives_;
