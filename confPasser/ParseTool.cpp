@@ -39,6 +39,30 @@ e_method checkMethodName(const std::string &block_name){
 	return OTHER_METHOD;
 }
 
+e_directive checkDirective(const std::string& dir_name){
+	if (dir_name == "root")
+		return ROOT;
+	if (dir_name == "index")
+		return INDEX;
+	if (dir_name == "autoindex")
+		return AUTOINDEX;
+	if (dir_name == "client_max_body_size")
+		return CLINET_MAX_BODY_SIZE;
+	if (dir_name == "error_page")
+		return ERROR_PAGE;
+	if (dir_name == "server_name")
+		return SERVER_NAME;
+	if (dir_name == "listen")
+		return LISTEN;
+	if (dir_name == "upload_store")
+		return UPLOAD_STORE;
+	if (dir_name == "return")
+		return RETURN;
+	if (dir_name == "cgi_pass")
+		return CGI_PASS;
+	return OTHER_DIRECTIVE;
+}
+
 /**
  * @brief double값으로 인자를 받는 int oveflow 체크 함수
  *
@@ -139,15 +163,7 @@ void	splitAndStore(std::vector<int>& store, std::string line, char delimiter){
   std::string temp;
 	double ret;
 	while (getline(ss, temp, delimiter)){
-		ret = 0;
-		for (std::string::iterator it = temp.begin(); it != temp.end(); it++){
-			if (*it < '0' || *it > '9')
-				throw(std::invalid_argument("NUMBER_INVALID_FORMAT"));
-			ret *= 10;
-			ret += *it - '0';
-		}
-		checkOverFlow(ret);
-		store.push_back((int)ret);
+		store.push_back(stringToInt(temp));
 	}
 }
 
@@ -167,3 +183,21 @@ void  extractDirective(std::string line, std::map<std::string, std::string>& dir
 	directives_map[key] = value;
 }
 
+/**
+ * @brief string을 int로 바꾸는 함수
+ *
+ * @param num string으로 생긴 숫자
+ * @return int 변경된 int값
+ * @warning 숫자가 아닌 값이 있거나, overflow가 나는 경우 throw해줍니다.
+ */
+int stringToInt(const std::string &num){
+	double ret = 0;
+	for (std::string::const_iterator it = num.begin(); it != num.end(); it++){
+			if (*it < '0' || *it > '9')
+				throw(std::invalid_argument("NUMBER_INVALID_FORMAT"));
+			ret *= 10;
+			ret += *it - '0';
+	}
+	checkOverFlow(ret);
+	return ret;
+}

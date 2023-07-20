@@ -18,7 +18,7 @@ public:
 	void	confPathInit(char* path);
 	void	confInit();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len);
-	void	printAllBlock();//testFunction It will Delete
+	void	refineDirective();
 private:
 	void	makeHttpBlock(std::ifstream& input);
 	void	makeOtherBlock(std::ifstream& input);

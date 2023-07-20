@@ -23,6 +23,7 @@ typedef enum methodtype{
 	DELETE,
 	OTHER_METHOD
 }e_method;
+//안하는 메서드들
 // OPTIONS, //서버가 지원하는 메서드를 판별할 수 있는 명령
 // COPY, //
 // MOVE,
@@ -32,8 +33,23 @@ typedef enum methodtype{
 // UNLOCK,
 // MKCOL //디렉토리 만드는 method
 
+typedef enum directive{
+	ROOT,
+	INDEX,
+	AUTOINDEX,
+	CLINET_MAX_BODY_SIZE,
+	ERROR_PAGE,
+	SERVER_NAME,
+	LISTEN,
+	UPLOAD_STORE,
+	RETURN,
+	CGI_PASS,
+	OTHER_DIRECTIVE
+} e_directive;
+
 e_block	checkBlockName(const std::string& block_name);
 e_method checkMethodName(const std::string &block_name);
+e_directive checkDirective(const std::string& block_name);
 void  checkOverFlow(double d);
 
 void	trimSidesSpace(std::string &line);
@@ -45,7 +61,7 @@ void	splitAndStore(std::vector<int>& store, std::string line, char delimiter);
 
 void  extractDirective(std::string line, std::map<std::string, std::string>& directives_map);
 
-
+int stringToInt(const std::string &num);
 
 
 /**
@@ -91,10 +107,7 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 					(dir_pos_a != std::string::npos && dir_pos_b != std::string::npos))
 			throw(std::runtime_error(" [ERROR in Nginx conf_file]"));
 		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
-		{
 				extractDirective(line.substr(0, dir_pos_b), block.getDirStore());
-				// block.printAllBlock();
-		}
 		else{ // {가 나오는 경우
 			std::cout << "MAKE BLOCK" << line << "\n";
 			block.makeBlock(line, input, line_len_);

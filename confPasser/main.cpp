@@ -9,7 +9,7 @@ int main(int argc, char **argv){
 			if (argc == 2)
 				test.confPathInit(argv[1]);//this is my confile
 		test.confInit();
-		test.printAllBlock();
+		test.refineDirective();
 	}catch (std::exception &e){
 		std::cerr << e.what() << "\n";
 	}

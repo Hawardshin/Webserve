@@ -17,7 +17,7 @@ std::map<std::string, std::string>& ConfParser::getDirStore(){
 /**
  * @brief 파일이름이 있는 경우만 호출합니다.
  *
- * @param argv 파일의 경로
+ * @param argv 파일의 경로z
  */
 void	ConfParser::confPathInit(char* path){
 	file_name_ = path;
@@ -74,16 +74,15 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 	}
 }
 
-void	ConfParser::printAllBlock(){
-	std::cout << "------------------IN ROOT Directives!!\n";
-	for (auto it : root_directives_){
-		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
-	}
-
-	for (auto it : http_store_)
-	{
-		std::cout << "----------------HTTP BLOCK INTO\n";
-		it.printAllBlock();
+void	ConfParser::refineDirective(){
+	// std::cout << "------------------IN ROOT Directives!!\n";
+	// for (auto it : root_directives_){
+	// 	std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
+	// }
+	std::map<std::string, std::string>& tmp = http_store_[0].getDirStore();
+	std::map<std::string, std::string>::iterator it;
+	for (it = tmp.begin(); it != tmp.end(); it++) {
+		http_store_[0].parseHttpDirective(*it);
 	}
 }
 
