@@ -5,8 +5,7 @@
  *
  * @param serv_sock 서버소켓의 fd
  */
-void  Kqueue::KqueueStart(const int &serv_sock)
-{
+void  Kqueue::KqueueStart(const int &serv_sock){
 	kqueue_fd_ = kqueue();
 	if (kqueue_fd_ == -1)
 		throw(std::runtime_error("kqueue() ERROR!!"));
@@ -24,13 +23,11 @@ void  Kqueue::KqueueStart(const int &serv_sock)
  *  EV_DISABLE, EV_DELETE(이벤트 비활성화 삭제),
  *  EV_ONESHOT(설정된 이벤트를 한번만 알려준다)
  */
-void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata)
-{
+void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata){
 	struct kevent tmp_event;
 	EV_SET(&tmp_event , ident, filter, flags, 0, 0, udata );
 	change_list_.push_back(tmp_event);
 }
-
 
 /**
  * @brief kqueue에서 이벤트를 감지하는 함수
@@ -38,10 +35,8 @@ void Kqueue::ChangeEvent(int ident, int filter, int flags, void * udata)
  * @param event_list 이벤트를 담을 배열 현재는 8개로 생각
  * @return int 감지된 이벤트의 갯수
  */
-int  Kqueue::detectEvent(struct kevent *event_list)
-{
+int  Kqueue::detectEvent(struct kevent *event_list){
 	int n_event = kevent(kqueue_fd_, &change_list_[0], change_list_.size(),event_list, 8, NULL);
-	// std::cout << n_event << "\n";
 	if (n_event == -1)
 		 throw(std::runtime_error("kevent() ERROR!!"));
 	change_list_.clear(); // clear change_list for new changes

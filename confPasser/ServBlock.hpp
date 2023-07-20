@@ -1,8 +1,8 @@
 #ifndef SERVBLOCK_HPP
 # define SERVBLOCK_HPP
 # include "LocBlock.hpp"
-
-
+# include "IBlock.hpp"
+# include "HttpBase.hpp"
 /**
  * @brief Server Block
  * location block을 담고있다.
@@ -22,7 +22,7 @@
  * server_name : port번호가 일치한다면  http헤더에 host와 server_name과 비교합니다.
  * upload_store : 출력 파일을 저장할 디렉토리를 지정합니다. (server과 location)
  */
-class ServBlock{
+class ServBlock : public IBlock, public HttpBase{
 public:
 	ServBlock();
 	~ServBlock();
@@ -37,13 +37,6 @@ private:
 	std::vector<LocBlock> loc_store_;
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> serv_directives_;
-
-	std::string root_;
-	std::vector<std::string> index_;
-	bool autoindex_;
-	int client_max_body_size_;
-	std::vector<int> error_code_;
-	std::string error_page_;
 
 	std::string upload_store_;
 

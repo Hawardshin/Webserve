@@ -13,15 +13,14 @@
 //4. 전달이 끝나고 결과값을 받고 연결을 종료.
 // #define BUFF_SIZE 500
 
-class Client
-{
+class Client{
 	public :
 		static const int BUFF_SIZE = 500;
 
 		void  initServAdr(char *ip_ad, char* port);
-		void  make_sock();
+		void  makeSock();
 		const int& getSock();
-		void  Connet_with_server();
+		void  ConnectWithServer();
 		void  sendData();
 		void  receiveResult();
 		void  closeConnect();
@@ -29,7 +28,6 @@ class Client
 		int sockfd;
 		struct sockaddr_in serv_adr;
 		char buff[BUFF_SIZE];
-
 };
 
 void Client:: initServAdr(char *ip_ad, char* port){
@@ -39,7 +37,7 @@ void Client:: initServAdr(char *ip_ad, char* port){
 	serv_adr.sin_port = htons(std::atoi(port));
 }
 
-void Client:: make_sock(){
+void Client:: makeSock(){
 	sockfd = socket(PF_INET, SOCK_STREAM, 0);
 }
 
@@ -47,14 +45,13 @@ const int &Client:: getSock(){
 	return (sockfd);
 }
 
-void  Client::Connet_with_server(){
+void  Client::ConnectWithServer(){
 	if (connect(sockfd, (sockaddr *)&serv_adr, sizeof(serv_adr)) == -1)
 		throw(std::runtime_error("connet error"));
 	std::cout << "Connected:..............\n";
 }
 
-void  Client::sendData()
-{
+void  Client::sendData(){
 	std::cout << "SEND TO MESSAGE TO SERVER: ";
 	std::cin >> buff;
 	write(sockfd, &buff, BUFF_SIZE);
@@ -65,8 +62,7 @@ void  Client::receiveResult(){
 	int len = read(sockfd, buff, BUFF_SIZE);
 	if (len == 0)
 		return ;
-	else
-	{
+	else{
 		buff[len ] = '\0';
 		std::cout <<"FROM SERVER : " <<buff << "\n";
 	}
@@ -76,20 +72,17 @@ void Client::closeConnect(){
 	close(sockfd);
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
 	if (argc != 3){
 		std::cerr << "error : <ip> <port>\n";
 		return (1);
 	}
-	try
-	{
+	try{
 		Client s1;
 		s1.initServAdr(argv[1], argv[2]);
-		s1.make_sock();
-		s1.Connet_with_server();
-		while (1)
-		{
+		s1.makeSock();
+		s1.ConnectWithServer();
+		while (1){
 			s1.sendData();
 			s1.receiveResult();
 		}

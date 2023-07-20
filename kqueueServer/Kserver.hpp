@@ -39,8 +39,8 @@ class Kserver{
 
 		explicit Kserver(char *port);
 		~Kserver();
-		void  Server_init();
-		void  sockAccept();//현재 사용하지 않습니다.
+		void  serverInit();
+		// void  sockAccept();//현재 사용하지 않습니다.
 		void  startWorking();
 	private:
 		Kserver();

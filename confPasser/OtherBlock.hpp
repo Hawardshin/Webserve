@@ -1,12 +1,13 @@
 #ifndef OTHERBLOCK_HPP
 # define OTHERBLOCK_HPP
 # include "ParseTool.hpp"
+# include "IBlock.hpp"
 /**
  * @brief 저희는 http, server location 블록을 제외하면 다른 블록도 블록화 해서 담아줍니다.
  *
  * @note otherblock안에는 otherblock만 올 수 있습니다.
  */
-class OtherBlock{
+class OtherBlock : public IBlock{
 	public :
 		OtherBlock();
 		~OtherBlock();

@@ -19,9 +19,9 @@ class Client
     struct sockaddr_in serv_adr;
   public :
     void  initServAdr(char *ip_ad, char* port);
-    void  make_sock();
+    void  makeSock();
     const int& getSock();
-    void  Connet_with_server()throw(std::runtime_error&);
+    void  ConnectWithServer()throw(std::runtime_error&);
     void  sendData();
     void  receiveResult();
     void  closeConnect();
@@ -34,7 +34,7 @@ void Client:: initServAdr(char *ip_ad, char* port){
   serv_adr.sin_port = htons(std::atoi(port));
 }
 
-void Client:: make_sock(){
+void Client:: makeSock(){
   sockfd = socket(PF_INET, SOCK_STREAM, 0);
 }
 
@@ -42,7 +42,7 @@ const int &Client:: getSock(){
   return (sockfd);
 }
 
-void  Client::Connet_with_server() throw(std::runtime_error&){
+void  Client::ConnectWithServer() throw(std::runtime_error&){
   if (connect(sockfd, (sockaddr *)&serv_adr, sizeof(serv_adr)) == -1)
     throw(std::runtime_error("connet error"));
   std::cout << "Connected:..............\n";
@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
   {
     Client s1;
     s1.initServAdr(argv[1], argv[2]);
-    s1.make_sock();
-    s1.Connet_with_server();
+    s1.makeSock();
+    s1.ConnectWithServer();
     s1.sendData();
     s1.receiveResult();
     s1.closeConnect();
