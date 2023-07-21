@@ -57,13 +57,13 @@ void  Kserver::serverInit(){
  * @note 호출된 clnt_sockfd에 accept된 fd가 있어서 그것들에 대한 처리가 필요합니다. (현재 사용 X)
  *
 */
-void  Kserver::sockAccept(){
-	clnt_addrsz_ = sizeof(clnt_addr_);
-	clnt_sockfd_ = accept(serv_sockfd_, (struct sockaddr *) &clnt_addr_, &clnt_addrsz_);
-	if (clnt_sockfd_ == -1)
-		throw(std::runtime_error("ACCEPT() ERROR"));
-	std::cout << "Connected Client : " << clnt_sockfd_ << "\n";
-}
+// void  Kserver::sockAccept(){
+// 	clnt_addrsz_ = sizeof(clnt_addr_);
+// 	clnt_sockfd_ = accept(serv_sockfd_, (struct sockaddr *) &clnt_addr_, &clnt_addrsz_);
+// 	if (clnt_sockfd_ == -1)
+// 		throw(std::runtime_error("ACCEPT() ERROR"));
+// 	std::cout << "Connected Client : " << clnt_sockfd_ << "\n";
+// }
 
 /**
  * @brief 메인로직 kqueue를 시작하고 무한 루프를 돌면서 이벤트를 감지->처리합니다.
