@@ -39,11 +39,11 @@ void	OtherBlock::makeBlock(std::string line, std::ifstream& input, int& line_len
 			break;
 	}
 }
-void	OtherBlock::printAllBlock(){
-	for (auto it: other_directives_){
-		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
-	}
-}
+// void	OtherBlock::printAllBlock(){
+// 	for (auto it: other_directives_){
+// 		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
+// 	}
+// }
 /**
  * @brief Other 블록을 만드는 함수
  *

@@ -44,16 +44,13 @@ void	ServBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 			break;
 	}
 }
-void	ServBlock::printAllBlock(){
-	std::cout << "------------------IN ROOT Directives!!\n";
-	for (auto it : serv_directives_){
-		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
-	}
-
-	for (auto it : loc_store_)
-	{
-		std::cout << "----------------HTTP BLOCK INTO\n";
-		it.printAllBlock();
+void	ServBlock::refineAll(){
+	parseHttpDirective(serv_directives_);
+	parseServDirective();
+	if (loc_store_.size() == 0)
+		throw(std::runtime_error("You must input Locaction block least One Block!"));
+	for (int i = 0; i < loc_store_.size(); i++){
+		loc_store_[i].refineAll();
 	}
 }
 
@@ -100,3 +97,18 @@ void	ServBlock::makeOtherBlock(std::ifstream& input, int& line_len_){
 	other_store_.push_back(new_block);
 	parseUntilEnd(input, line_len_, other_store_[other_store_.size() - 1]);
 }
+
+void	ServBlock::parseServDirective(){
+	std::map<std::string, std::string>::iterator it = serv_directives_.find("server_name");
+	if (it == serv_directives_.end())
+		throw(std::runtime_error("You must at least one server_name!!!"));
+	server_name_	= (*it).second;
+	it = serv_directives_.find("listen");//default_server안 받겠습니다.
+	if (it == serv_directives_.end())
+		throw(std::runtime_error("You must at least one listen!!!"));
+	listen_ = stringToInt((*it).second);
+	it = serv_directives_.find("upload_store");
+	if (it != serv_directives_.end())
+		upload_store_ = (*it).second;
+}
+

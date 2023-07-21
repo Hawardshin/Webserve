@@ -29,34 +29,53 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 	std::string key,value;
 	if (line.find("limit_except") == std::string::npos)
 		throw(std::runtime_error("CAN't Make block in Loc block!(only allow limit_except)"));
+	is_limit_except_ = true;
 	splitAndStore(deny_methods_, line.substr(12), ' ');
 	for (std::vector<std::string>::iterator it = deny_methods_.begin(); it != deny_methods_.end(); it++){
-		std::cout <<"-----------------" <<*it << "\n";
+	// std::cout <<"-----------------" <<*it << "\n";
 		if (checkMethodName(*it) == OTHER_METHOD)
 			throw(std::runtime_error("THIS IS NOT ALLOW METHOD!"));
 	}
 	while (getline(input, line)){
 		trimComment(line);
 		trimSidesSpace(line);
-		line = line.substr(0, line.find(';'));
-		line_len_++;
 		if (line == "")
 			continue;
 		if (line == "}")
-			break;
+			return;
+		line = line.substr(0, line.find(';'));
+		line_len_++;
 		splitKeyVal(key, value, line);
 		if (key != "deny" ||  value != "all")
 			throw(std::runtime_error("ERROR it must only deny all"));
 	}
-}
-//this is cpp 11 for test.. I will delete it
-void	LocBlock::printAllBlock(){
-	std::cout << "LocBlock name is :|" <<loc_info_ << "\n";
-	for (auto it: loc_directives_){
-		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
-	}
+	throw(std::runtime_error("Not closed by }"));
 }
 
+void	LocBlock::refineAll(){
+	parseHttpDirective(loc_directives_);
+	parseLocDirective();
+}
 
+void	LocBlock::parseLocDirective(){
+	std::map<std::string, std::string>::iterator it = loc_directives_.find("upload_store");
+	if (it != loc_directives_.end())
+		upload_store_ = (*it).second;
+	it = loc_directives_.find("return");
+	if (it != loc_directives_.end())
+		parseReturn((*it).second);
+	it = loc_directives_.find("cgi_pass");
+	if (it != loc_directives_.end())
+		cgi_pass_ = (*it).second;
+}
+
+void	LocBlock::parseReturn(std::string ret_line){
+	std::vector<std::string> tmp;
+	splitAndStore(tmp, ret_line, ' ');
+	if (tmp.size() != 2)
+		throw(std::runtime_error("you must return argument only two!"));
+	return_code_ = stringToInt(tmp[0]);
+	return_string_ = tmp[1];
+}
 /* private */
 LocBlock::LocBlock(){}

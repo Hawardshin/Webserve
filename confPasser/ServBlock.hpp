@@ -28,12 +28,13 @@ public:
 	~ServBlock();
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
-	void	printAllBlock();
+	void	refineAll();
 	LocBlock findLocBlock(std::string path);//http에서 path에 해당합니다.
 
 private:
 	void	makeLocBlock(std::ifstream& input, int& line_len_, std::string &block_name);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);
+	void	parseServDirective();
 	std::vector<LocBlock> loc_store_;
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> serv_directives_;

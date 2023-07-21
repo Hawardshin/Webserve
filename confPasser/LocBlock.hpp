@@ -20,9 +20,11 @@ public:
 	~LocBlock();
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
-	void	printAllBlock();
+	void	refineAll();
 private:
 	LocBlock();
+	void	parseLocDirective();
+	void	parseReturn(std::string ret_line);
 	std::map<std::string, std::string> loc_directives_;
 
 	std::string upload_store_;

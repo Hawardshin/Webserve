@@ -39,29 +39,29 @@ e_method checkMethodName(const std::string &block_name){
 	return OTHER_METHOD;
 }
 
-e_directive checkDirective(const std::string& dir_name){
-	if (dir_name == "root")
-		return ROOT;
-	if (dir_name == "index")
-		return INDEX;
-	if (dir_name == "autoindex")
-		return AUTOINDEX;
-	if (dir_name == "client_max_body_size")
-		return CLINET_MAX_BODY_SIZE;
-	if (dir_name == "error_page")
-		return ERROR_PAGE;
-	if (dir_name == "server_name")
-		return SERVER_NAME;
-	if (dir_name == "listen")
-		return LISTEN;
-	if (dir_name == "upload_store")
-		return UPLOAD_STORE;
-	if (dir_name == "return")
-		return RETURN;
-	if (dir_name == "cgi_pass")
-		return CGI_PASS;
-	return OTHER_DIRECTIVE;
-}
+// e_directive checkDirective(const std::string& dir_name){
+// 	if (dir_name == "root")
+// 		return ROOT;
+// 	if (dir_name == "index")
+// 		return INDEX;
+// 	if (dir_name == "autoindex")
+// 		return AUTOINDEX;
+// 	if (dir_name == "client_max_body_size")
+// 		return CLINET_MAX_BODY_SIZE;
+// 	if (dir_name == "error_page")
+// 		return ERROR_PAGE;
+// 	if (dir_name == "server_name")
+// 		return SERVER_NAME;
+// 	if (dir_name == "listen")
+// 		return LISTEN;
+// 	if (dir_name == "upload_store")
+// 		return UPLOAD_STORE;
+// 	if (dir_name == "return")
+// 		return RETURN;
+// 	if (dir_name == "cgi_pass")
+// 		return CGI_PASS;
+// 	return OTHER_DIRECTIVE;
+// }
 
 /**
  * @brief double값으로 인자를 받는 int oveflow 체크 함수
