@@ -44,6 +44,11 @@ void	ServBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 			break;
 	}
 }
+
+/**
+ * @brief 모든 server block의 데이터를 사용가능하도록 map에 담긴걸 클래스 멤버에 사용하기 좋은 값으로 담아주는 함수
+ *
+ */
 void	ServBlock::refineAll(){
 	parseHttpDirective(serv_directives_);
 	parseServDirective();
@@ -53,7 +58,6 @@ void	ServBlock::refineAll(){
 		loc_store_[i].refineAll();
 	}
 }
-
 
 /**
  * @brief 전달된 경로에 대해서 어떤 규칙을 따라야 하는지 리턴해주는 함수입니다.
@@ -98,6 +102,10 @@ void	ServBlock::makeOtherBlock(std::ifstream& input, int& line_len_){
 	parseUntilEnd(input, line_len_, other_store_[other_store_.size() - 1]);
 }
 
+/**
+ * @brief 서버에만 해당하는 데이터를 멤버변수에 담아주는 함수
+ *
+ */
 void	ServBlock::parseServDirective(){
 	std::map<std::string, std::string>::iterator it = serv_directives_.find("server_name");
 	if (it == serv_directives_.end())

@@ -49,6 +49,10 @@ void	HttpBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 	}
 }
 
+/**
+ * @brief http의 모든 directive를 정제하는 함수 동시에 가지고 있는 모든 server_block에게 정제 명령을 내립니다.
+ *
+ */
 void	HttpBlock::refineAll(){
 	parseHttpDirective(http_directives_);
 	if (serv_store_.size() == 0)

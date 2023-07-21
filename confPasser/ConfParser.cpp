@@ -74,6 +74,10 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 	}
 }
 
+/**
+ * @brief 이 함수를 호출함으로써 map에만 담긴 데이터들은 http, server location블록 모두 클래스에 필요한 데이터에 담김니다.
+ *
+ */
 void	ConfParser::refineDirective(){
 	http_store_[0].refineAll();
 	// http_store_[0].parseHttpDirective(http_store_[0].getDirStore());

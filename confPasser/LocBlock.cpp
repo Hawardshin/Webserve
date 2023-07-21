@@ -52,11 +52,22 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 	throw(std::runtime_error("Not closed by }"));
 }
 
+/**
+ * @brief location block의 모든 directive를 정제하는 함수
+ *
+ */
 void	LocBlock::refineAll(){
 	parseHttpDirective(loc_directives_);
 	parseLocDirective();
 }
 
+/* private */
+LocBlock::LocBlock(){}
+
+/**
+ * @brief location 블록에만 해당하는 값들을 정제
+ *
+ */
 void	LocBlock::parseLocDirective(){
 	std::map<std::string, std::string>::iterator it = loc_directives_.find("upload_store");
 	if (it != loc_directives_.end())
@@ -69,6 +80,11 @@ void	LocBlock::parseLocDirective(){
 		cgi_pass_ = (*it).second;
 }
 
+/**
+ * @brief return에 해당하는 부분을 파싱 (redirection과 연관있습니다.)
+ *
+ * @param ret_line return key를 가진 directive의 value 값 입니다.(map["return"];)
+ */
 void	LocBlock::parseReturn(std::string ret_line){
 	std::vector<std::string> tmp;
 	splitAndStore(tmp, ret_line, ' ');
@@ -77,5 +93,4 @@ void	LocBlock::parseReturn(std::string ret_line){
 	return_code_ = stringToInt(tmp[0]);
 	return_string_ = tmp[1];
 }
-/* private */
-LocBlock::LocBlock(){}
+
