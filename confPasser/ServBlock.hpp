@@ -44,7 +44,7 @@ private:
 	//only server member
 	std::string server_name_;
 	int listen_;
-	bool default_server_;
+	// bool default_server_;
 };
 
 #endif

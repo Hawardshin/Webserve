@@ -57,7 +57,7 @@ void	HttpBlock::refineAll(){
 	parseHttpDirective(http_directives_);
 	if (serv_store_.size() == 0)
 		throw(std::runtime_error("You must input Server block least One Block!"));
-	for (int i = 0; i < serv_store_.size(); i++){
+	for (size_t i = 0; i < serv_store_.size(); i++){
 		serv_store_[i].refineAll();
 	}
 }

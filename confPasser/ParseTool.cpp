@@ -161,7 +161,6 @@ void	splitAndStore(std::vector<int>& store, std::string line, char delimiter){
 	trimSidesSpace(line);
 	std::stringstream ss(line);
   std::string temp;
-	double ret;
 	while (getline(ss, temp, delimiter)){
 		store.push_back(stringToInt(temp));
 	}

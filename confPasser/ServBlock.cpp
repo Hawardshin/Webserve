@@ -5,7 +5,7 @@
  * default listen은 8000번으로 했습니다.
  *
  */
-ServBlock::ServBlock() : upload_store_(""), server_name_(""), listen_(8000), default_server_(false){}
+ServBlock::ServBlock() : upload_store_(""), server_name_(""), listen_(8000){}
 
 ServBlock::~ServBlock(){}
 
@@ -54,7 +54,7 @@ void	ServBlock::refineAll(){
 	parseServDirective();
 	if (loc_store_.size() == 0)
 		throw(std::runtime_error("You must input Locaction block least One Block!"));
-	for (int i = 0; i < loc_store_.size(); i++){
+	for (size_t i = 0; i < loc_store_.size(); i++){
 		loc_store_[i].refineAll();
 	}
 }
