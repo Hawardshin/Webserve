@@ -1,22 +1,28 @@
 # include "HttpBase.hpp"
 
 
-HttpBase::HttpBase() :  root_(""), autoindex_(false), client_max_body_size_(-1), error_page_(""){}
-HttpBase:: ~HttpBase(){}
-void	HttpBase::parseHttpDirective(const std::pair<std::string, std::string> &direc){
-	switch (checkDirective(direc.first)){
-		case ROOT : root_ = direc.second;
-			break ;
-		case INDEX : splitAndStore(index_,direc.second,' ');
-			break ;
-		case AUTOINDEX : setAutoIndex(direc.second);
-			break;
-		case CLINET_MAX_BODY_SIZE : client_max_body_size_ = stringToInt(direc.second);
-			break;
-		case ERROR_PAGE : setErrorPage(direc.second);
-			break;
-	}
+HttpBase::HttpBase() :  root_(""), autoindex_(false), client_max_body_size_(-1), error_page_(""){
+	directives_[0] = "root";
+	directives_[1] = "index";
+	directives_[2] = "autoindex";
+	directives_[3] = "client_max_body_size";
+	directives_[4] = "error_page";
 }
+HttpBase:: ~HttpBase(){}
+
+void	HttpBase::parseHttpDirective(std::map<std::string, std::string>& dir_store){
+	if (dir_store.find("root") != dir_store.end())
+		root_ = dir_store["root"];
+	if (dir_store.find("index") != dir_store.end())
+		splitAndStore(index_,dir_store["index"],' ');
+	if (dir_store.find("autoindex") != dir_store.end())
+		setAutoIndex(dir_store["autoindex"]);
+	if (dir_store.find("client_max_body_size") != dir_store.end())
+		client_max_body_size_ = stringToInt(dir_store["client_max_body_size"]);
+	if (dir_store.find("error_page") != dir_store.end())
+		 setErrorPage(dir_store["error_page"]);
+}
+
 
 void	HttpBase::setAutoIndex(const std::string& value){
 	if (value == "on")

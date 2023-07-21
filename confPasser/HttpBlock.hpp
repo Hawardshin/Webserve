@@ -38,7 +38,7 @@ public:
 	ServBlock findServBlock(std::string serv_name);//http메세지에서 host_name을 인자로 줍니다.
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
-	void	printAllBlock();
+	void	refineAll();
 private:
 	void	makeServerBlock(std::ifstream& input, int& line_len_);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);

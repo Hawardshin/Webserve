@@ -49,15 +49,12 @@ void	HttpBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 	}
 }
 
-void	HttpBlock::printAllBlock(){
-	std::cout << "------------------IN HTTPBLOCK Directives!!\n";
-	for (auto it : http_directives_){
-		std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
-	}
-
-	for (auto it : serv_store_){
-		std::cout << "----------------Serv BLOCK INTO\n";
-		it.printAllBlock();
+void	HttpBlock::refineAll(){
+	parseHttpDirective(http_directives_);
+	if (serv_store_.size() == 0)
+		throw(std::runtime_error("You must input Server block least One Block!"));
+	for (int i = 0; i < serv_store_.size(); i++){
+		serv_store_[i].refineAll();
 	}
 }
 

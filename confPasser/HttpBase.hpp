@@ -6,7 +6,8 @@ class HttpBase
 public :
 	HttpBase();
 	virtual ~HttpBase();
-	void	parseHttpDirective(const std::pair<std::string, std::string> &direc);
+	void	parseHttpDirective(std::map<std::string, std::string>& dir_store);
+	const char* directives_[6];
 protected :
 	void	setAutoIndex(const std::string& value);
 	void	setErrorPage(const std::string& line);

@@ -75,15 +75,8 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 }
 
 void	ConfParser::refineDirective(){
-	// std::cout << "------------------IN ROOT Directives!!\n";
-	// for (auto it : root_directives_){
-	// 	std::cout <<"key:|" << it.first<< "|value:|" <<it.second << "|\n";
-	// }
-	std::map<std::string, std::string>& tmp = http_store_[0].getDirStore();
-	std::map<std::string, std::string>::iterator it;
-	for (it = tmp.begin(); it != tmp.end(); it++) {
-		http_store_[0].parseHttpDirective(*it);
-	}
+	http_store_[0].refineAll();
+	// http_store_[0].parseHttpDirective(http_store_[0].getDirStore());
 }
 
 
