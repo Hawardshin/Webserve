@@ -6,7 +6,7 @@ HttpBase:: ~HttpBase(){}
 const std::string& HttpBase::getRoot(){return root_;}
 const std::vector<std::string>& HttpBase::getIndex(){return index_;}
 const bool& HttpBase::isAutoIndex(){return autoindex_;}
-const int& HttpBase::clientMaxBodySize(){return client_max_body_size_;}
+const int& HttpBase::getClientMaxBodySize(){return client_max_body_size_;}
 const std::vector<int>& HttpBase::getErrorCode(){return error_code_;}
 const std::string& HttpBase::getErrorPage(){return error_page_;}
 
@@ -27,6 +27,15 @@ void	HttpBase::printHttpInfo(){
 	std::cout << "error_page:|" << error_page_ << "|\n";
 }
 
+void	HttpBase::setInherit(HttpBase &base){
+	autoindex_ = base.autoindex_;
+	root_ = base.root_;
+	index_ = base.index_;
+	autoindex_ = base.autoindex_;
+	client_max_body_size_ = base.client_max_body_size_;
+	error_code_ = base.error_code_;
+	error_page_ = base.error_page_;
+}
 
 /**
  * @brief map에 이미 다 들어있는데 그 값을 사용할 수 있게 정제해준다.
@@ -34,6 +43,7 @@ void	HttpBase::printHttpInfo(){
  * @param dir_store 해당하는 map값
  */
 void	HttpBase::parseHttpDirective(std::map<std::string, std::string>& dir_store){
+	index_.push_back("");
 	if (dir_store.find("root") != dir_store.end())
 		root_ = dir_store["root"];
 	if (dir_store.find("index") != dir_store.end())

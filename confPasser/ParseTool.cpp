@@ -137,8 +137,10 @@ void	splitKeyVal(std::string& key, std::string &value, std::string &line){
  * @param store 저장할 벡터
  * @param line 자를 한줄
  * @param delimiter 구분자
+ * @warning 들어온 vector에 대해서 clear를 진행한다.
  */
 void	splitAndStore(std::vector<std::string>& store, std::string line, char delimiter){
+	store.clear();
 	trimSidesSpace(line);
   std::stringstream ss(line);
   std::string temp;
@@ -154,8 +156,10 @@ void	splitAndStore(std::vector<std::string>& store, std::string line, char delim
  * @param line 자를 한줄
  * @param delimiter 구분자
  * @warning 숫자가 아닌경우와 overflow에 대해서 에러를 처리합니다.
+*  @warning 들어온 vector에 대해서 clear를 진행한다.
  */
 void	splitAndStore(std::vector<int>& store, std::string line, char delimiter){
+	store.clear();
 	trimSidesSpace(line);
 	std::stringstream ss(line);
   std::string temp;
@@ -176,7 +180,6 @@ void  extractDirective(std::string line, std::map<std::string, std::string>& dir
 
 	std::string key, value;
 	splitKeyVal(key, value, line);
-	// std::cout << "---extractKey:|" << key <<"|value:|" <<value << "|\n";
 	directives_map[key] = value;
 }
 

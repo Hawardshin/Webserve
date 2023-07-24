@@ -75,6 +75,7 @@ void	HttpBlock::refineAll(){
 	if (serv_store_.size() == 0)
 		throw(std::runtime_error("You must input Server block least One Block!"));
 	for (size_t i = 0; i < serv_store_.size(); i++){
+		serv_store_[i].setInherit(*this);
 		serv_store_[i].refineAll();
 		// check_same.push_back(serv_store_[i].getListen());
 	}

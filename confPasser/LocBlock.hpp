@@ -18,7 +18,16 @@ class LocBlock : public IBlock, public HttpBase{
 public:
 	LocBlock(std::string loc_info);
 	~LocBlock();
+
 	std::map<std::string, std::string>& getDirStore();
+	const std::string& getUploadStore();
+	const std::string& getLocInfo();
+	const int& getReturnCode();
+	const std::string& getReturnPath();
+	const bool& isLimit();
+	const std::string& getCgiPath();
+	const std::vector<std::string>& getDenyMethod();
+
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 	void	refineAll();
 private:
@@ -30,7 +39,7 @@ private:
 	std::string upload_store_;
 	std::string loc_info_;//location / { 예시에서 : '/'를 이곳에 저장한다.
 	int return_code_;
-	std::string return_string_;
+	std::string return_path_;
 	bool is_limit_except_;
 	std::string cgi_pass_;
 	std::vector<std::string> deny_methods_;

@@ -10,10 +10,11 @@ public :
 	const std::string& getRoot();
 	const std::vector<std::string>& getIndex();
 	const bool& isAutoIndex();
-	const int& clientMaxBodySize();
+	const int& getClientMaxBodySize();
 	const std::vector<int>& getErrorCode();
 	const std::string& getErrorPage();
 	void	printHttpInfo();
+	void	setInherit(HttpBase &base);
 protected :
 	void	setAutoIndex(const std::string& value);
 	void	setErrorPage(const std::string& line);

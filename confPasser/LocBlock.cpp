@@ -1,7 +1,7 @@
 #include "LocBlock.hpp"
 
 
-LocBlock::LocBlock(std::string loc_info) : upload_store_(""), loc_info_(loc_info), return_code_(-1), return_string_(""), is_limit_except_(false), cgi_pass_(""){}
+LocBlock::LocBlock(std::string loc_info) : upload_store_(""), loc_info_(loc_info), return_code_(-1), return_path_(""), is_limit_except_(false), cgi_pass_(""){}
 
 LocBlock::~LocBlock(){}
 
@@ -11,9 +11,16 @@ LocBlock::~LocBlock(){}
  * @note 템플릿 사용 위해서 반드시 필요
  * @return std::map<std::string, std::string>& 인자로 받아서 변경시키기 위해서 레퍼런스 타입으로 반환함
  */
-std::map<std::string, std::string>& LocBlock::getDirStore(){
-	return (loc_directives_);
-}
+std::map<std::string, std::string>& LocBlock::getDirStore(){return (loc_directives_);}
+
+const std::string& LocBlock::getUploadStore(){return upload_store_; }
+const std::string& LocBlock::getLocInfo(){return loc_info_;}
+const int& LocBlock::getReturnCode(){return return_code_;}
+const std::string& LocBlock::getReturnPath(){return return_path_;}
+const bool& LocBlock::isLimit(){return is_limit_except_;}
+const std::string& LocBlock::getCgiPath(){return cgi_pass_;}
+const std::vector<std::string>& LocBlock::getDenyMethod(){return deny_methods_;}
+
 
 /**
  * @brief location block에서는 limit_except 블록만 올 수 있습니다.
@@ -90,6 +97,6 @@ void	LocBlock::parseReturn(std::string ret_line){
 	if (tmp.size() != 2)
 		throw(std::runtime_error("you must return argument only two!"));
 	return_code_ = stringToInt(tmp[0]);
-	return_string_ = tmp[1];
+	return_path_ = tmp[1];
 }
 

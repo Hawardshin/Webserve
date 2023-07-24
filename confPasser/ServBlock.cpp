@@ -57,6 +57,7 @@ void	ServBlock::refineAll(){
 	if (loc_store_.size() == 0)
 		throw(std::runtime_error("You must input Locaction block least One Block!"));
 	for (size_t i = 0; i < loc_store_.size(); i++){
+		loc_store_[i].setInherit(*this);
 		loc_store_[i].refineAll();
 	}
 }
@@ -75,11 +76,20 @@ void	ServBlock::printInfo(){
 /**
  * @brief 전달된 경로에 대해서 어떤 규칙을 따라야 하는지 리턴해주는 함수입니다.
  *
+ * @todo 여기서 부터 해야됨!!
  * @param http에서 path를 추출해서 원하는 블럭을 얻을 때 사용합니다.
  * @return LocBlock 전딜힌 path에 대해서 해당하는 location block을 리턴해줍니다.
  */
 LocBlock ServBlock::findLocBlock(std::string path){
-	(void)path;
+	const std::vector<std::string>& serv_index_store = getIndex();
+	for(size_t i = 0; i < serv_index_store.size(); i++){
+		std::string new_path = path + serv_index_store[i];
+		for (size_t i = 0; i < loc_store_.size(); i++){
+			if (path == loc_store_[i].getLocInfo()){
+				const std::vector<std::string>& loc_index_store = loc_store_[i].getIndex();
+			}
+		}
+	}
 	return loc_store_[0];
 }
 
