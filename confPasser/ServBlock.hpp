@@ -30,6 +30,9 @@ public:
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 	void	refineAll();
 	LocBlock findLocBlock(std::string path);//http에서 path에 해당합니다.
+	const std::string& getUploadStore();
+	const std::string& getServerName();
+	const int& getListen();
 
 private:
 	void	makeLocBlock(std::ifstream& input, int& line_len_, std::string &block_name);

@@ -118,7 +118,6 @@ void	trimComment(std::string &line){
  * @warning derective를 key space value 형식이 아니면 runtime_error를 던집니다.
  */
 void	splitKeyVal(std::string& key, std::string &value, std::string &line){
-
 	size_t tmpos = line.find(' ');
 	if (tmpos == std::string::npos)	//directive<space>value로 되어있어야 한다.
 		throw(std::runtime_error("ERROR DIRECTIVE key"));

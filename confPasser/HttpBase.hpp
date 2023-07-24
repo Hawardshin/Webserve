@@ -7,7 +7,12 @@ public :
 	HttpBase();
 	virtual ~HttpBase();
 	void	parseHttpDirective(std::map<std::string, std::string>& dir_store);
-	const char* directives_[6];
+	const std::string& getRoot();
+	const std::vector<std::string>& getIndex();
+	const bool& isAutoIndex();
+	const int& clientMaxBodySize();
+	const std::vector<int>& getErrorCode();
+	const std::string& getErrorPage();
 protected :
 	void	setAutoIndex(const std::string& value);
 	void	setErrorPage(const std::string& line);

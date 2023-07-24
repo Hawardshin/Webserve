@@ -9,6 +9,10 @@ ServBlock::ServBlock() : upload_store_(""), server_name_(""), listen_(8000){}
 
 ServBlock::~ServBlock(){}
 
+const std::string& ServBlock::getUploadStore(){return upload_store_;}
+const std::string& ServBlock::getServerName(){return server_name_;}
+const int& ServBlock::getListen(){return listen_;}
+
 /**
  * @brief serv_directives_ 반환
  *

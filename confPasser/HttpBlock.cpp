@@ -5,10 +5,20 @@ HttpBlock::~HttpBlock(){}
 /**
  * @brief 서버이름 즉 http의 host_name을 기준으로 해당하는 서버를 찾는 함수
 
+ * @param port_num 포트번호에 해당하는 값을 전달
  * @param serv_name http메세지에서 host_name
  * @return ServBlock 해당하는 서버 블록 또는 default 서버는 port 번호가 같으면 그걸로 가는것 입니다.(포트가 다르면 짤.)
  */
-ServBlock HttpBlock::findServBlock(std::string serv_name){
+ServBlock HttpBlock::findServBlock(int port_num, std::string serv_name){
+	int default_serv = -1;
+	for (int i = 0; i < serv_store_.size(); i++){
+		if (serv_store_[i].getListen() == port_num){
+			if (default_serv == -1)
+				default_serv = i;
+		}
+
+
+	}
 	(void) serv_name;
 	return (serv_store_[0]);
 }
