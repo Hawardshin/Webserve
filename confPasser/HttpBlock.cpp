@@ -8,19 +8,25 @@ HttpBlock::~HttpBlock(){}
  * @param port_num 포트번호에 해당하는 값을 전달
  * @param serv_name http메세지에서 host_name
  * @return ServBlock 해당하는 서버 블록 또는 default 서버는 port 번호가 같으면 그걸로 가는것 입니다.(포트가 다르면 짤.)
+ * @warning 포트가 일치하는 serverblock이 없는 경우 listen이 -1인 server block을 리턴합니다.
  */
 ServBlock HttpBlock::findServBlock(int port_num, std::string serv_name){
 	int default_serv = -1;
-	for (int i = 0; i < serv_store_.size(); i++){
+	ServBlock not_allow_server;
+	for (size_t i = 0; i < serv_store_.size(); i++){
 		if (serv_store_[i].getListen() == port_num){
 			if (default_serv == -1)
 				default_serv = i;
+			const std::vector<std::string> &serv_names = serv_store_[i].getServerName();
+			for (size_t j = 0; j < serv_names.size(); j++){
+				if (serv_names[j] == serv_name)
+					return (serv_store_[i]);
+			}
 		}
-
-
 	}
-	(void) serv_name;
-	return (serv_store_[0]);
+	if (default_serv != -1)
+		return (serv_store_[default_serv]);
+	return (not_allow_server); // 포트가 다른 경우 listen 이 -1인 Serv block을 리턴합니다.
 }
 
 /**
@@ -61,15 +67,28 @@ void	HttpBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_
 
 /**
  * @brief http의 모든 directive를 정제하는 함수 동시에 가지고 있는 모든 server_block에게 정제 명령을 내립니다.
- *
+ * @todo 같은 포트에 대해서 에러를 처리하는 코드를 주석해뒀습니다.
  */
 void	HttpBlock::refineAll(){
+	// std::vector<int> check_same;
 	parseHttpDirective(http_directives_);
 	if (serv_store_.size() == 0)
 		throw(std::runtime_error("You must input Server block least One Block!"));
 	for (size_t i = 0; i < serv_store_.size(); i++){
 		serv_store_[i].refineAll();
+		// check_same.push_back(serv_store_[i].getListen());
 	}
+	// std::sort(check_same.begin(), check_same.end());
+	// int bef = -1;
+	// for (size_t i = 0; i < check_same.size(); i++){
+	// 	if (check_same[i] == bef)
+	// 		throw(std::runtime_error("Cannot Same_Port NUM SERVER!!"));
+	// 		bef = check_same[i];
+	// }
+}
+
+void	HttpBlock::printInfo(){
+	printHttpInfo();
 }
 
 

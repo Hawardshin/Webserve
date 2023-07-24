@@ -9,6 +9,7 @@
 		1. 정확한 이름
 		2. 별표로 시작하는 가장 긴 와일드카드 이름(예: "*.example.org")
 		3. 별표로 끝나는 가장 긴 와일드카드 이름(예: "mail.*")
+		저희 과제에서는 와일드 카드 안 해서 둘 이상 일치하는 경우 가장 먼저 나오는 경우만 하겠습니다.
  * @details [와일드 카드]
 		- 와일드 카드 규칙 : 와일드 카드는 반드시 시작과 끝에만 붙일 수 있습니다.
 		- 스페셜 와일드 카드 (`.example.org`) : 이 와일드 카드는 `example.org` 로 정확한 서버이름을 정하기도 하고 `*.example.org` 를 의미하기도 합니다.
@@ -39,6 +40,7 @@ public:
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 	void	refineAll();
+	void	printInfo();
 private:
 	void	makeServerBlock(std::ifstream& input, int& line_len_);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);

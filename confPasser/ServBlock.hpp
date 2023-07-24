@@ -27,13 +27,14 @@ public:
 	ServBlock();
 	~ServBlock();
 	std::map<std::string, std::string>& getDirStore();
+	const std::string& getUploadStore();
+	const std::vector<std::string>&  getServerName();
+	const int& getListen();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
+
 	void	refineAll();
 	LocBlock findLocBlock(std::string path);//http에서 path에 해당합니다.
-	const std::string& getUploadStore();
-	const std::string& getServerName();
-	const int& getListen();
-
+	void	printInfo();
 private:
 	void	makeLocBlock(std::ifstream& input, int& line_len_, std::string &block_name);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);
@@ -45,9 +46,8 @@ private:
 	std::string upload_store_;
 
 	//only server member
-	std::string server_name_;
+	std::vector<std::string> server_name_;
 	int listen_;
-	// bool default_server_;
 };
 
 #endif

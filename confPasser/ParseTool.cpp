@@ -139,11 +139,10 @@ void	splitKeyVal(std::string& key, std::string &value, std::string &line){
  * @param delimiter 구분자
  */
 void	splitAndStore(std::vector<std::string>& store, std::string line, char delimiter){
-	trimSidesSpace(line.erase(line.size() - 1));
+	trimSidesSpace(line);
   std::stringstream ss(line);
   std::string temp;
 	while (getline(ss, temp, delimiter)) {
-		std::cout << "Split::::|"<<temp << "|\n";
 		store.push_back(temp);
 	}
 }
@@ -177,7 +176,7 @@ void  extractDirective(std::string line, std::map<std::string, std::string>& dir
 
 	std::string key, value;
 	splitKeyVal(key, value, line);
-	std::cout << "---extractKey:|" << key <<"|value:|" <<value << "|\n";
+	// std::cout << "---extractKey:|" << key <<"|value:|" <<value << "|\n";
 	directives_map[key] = value;
 }
 

@@ -109,7 +109,6 @@ void	parseUntilEnd(std::ifstream& input, int& line_len_, T& block){
 		else if (dir_pos_b != std::string::npos && dir_pos_a == std::string::npos)
 				extractDirective(line.substr(0, dir_pos_b), block.getDirStore());
 		else{ // {가 나오는 경우
-			std::cout << "MAKE BLOCK" << line << "\n";
 			block.makeBlock(line, input, line_len_);
 			if (input.eof() == true)
 				throw(std::runtime_error("this is not close {"));

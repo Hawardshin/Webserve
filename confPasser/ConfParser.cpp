@@ -83,6 +83,9 @@ void	ConfParser::refineDirective(){
 	// http_store_[0].parseHttpDirective(http_store_[0].getDirStore());
 }
 
+ServBlock	ConfParser::getServBlock(int port_num, std::string serv_name){
+	return (http_store_[0].findServBlock(port_num, serv_name));
+}
 
 /* private */
 

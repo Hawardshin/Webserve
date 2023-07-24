@@ -30,9 +30,8 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 	if (line.find("limit_except") == std::string::npos)
 		throw(std::runtime_error("CAN't Make block in Loc block!(only allow limit_except)"));
 	is_limit_except_ = true;
-	splitAndStore(deny_methods_, line.substr(12), ' ');
+	splitAndStore(deny_methods_,line.substr(12, line.find('{') - 12) ,' ');
 	for (std::vector<std::string>::iterator it = deny_methods_.begin(); it != deny_methods_.end(); it++){
-	// std::cout <<"-----------------" <<*it << "\n";
 		if (checkMethodName(*it) == OTHER_METHOD)
 			throw(std::runtime_error("THIS IS NOT ALLOW METHOD!"));
 	}

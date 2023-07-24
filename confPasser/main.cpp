@@ -10,6 +10,9 @@ int main(int argc, char **argv){
 				test.confPathInit(argv[1]);//this is my confile
 		test.confInit();
 		test.refineDirective();
+		ServBlock tmp = test.getServBlock(80, "localhost");
+		tmp.printInfo();
+
 	}catch (std::exception &e){
 		std::cerr << e.what() << "\n";
 	}

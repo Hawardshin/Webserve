@@ -13,6 +13,7 @@ public :
 	const int& clientMaxBodySize();
 	const std::vector<int>& getErrorCode();
 	const std::string& getErrorPage();
+	void	printHttpInfo();
 protected :
 	void	setAutoIndex(const std::string& value);
 	void	setErrorPage(const std::string& line);

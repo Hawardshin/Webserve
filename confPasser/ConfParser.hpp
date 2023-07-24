@@ -19,6 +19,7 @@ public:
 	void	confInit();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len);
 	void	refineDirective();
+	ServBlock	getServBlock(int port_num, std::string serv_name);
 private:
 	void	makeHttpBlock(std::ifstream& input);
 	void	makeOtherBlock(std::ifstream& input);

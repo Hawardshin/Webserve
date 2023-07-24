@@ -2,16 +2,12 @@
 
 /**
  * @brief Construct a new Serv Block:: Serv Block object
- * default listen은 8000번으로 했습니다.
+ * default listen은 -1번으로 해서 에러로 처리할 예정입니다.
  *
  */
-ServBlock::ServBlock() : upload_store_(""), server_name_(""), listen_(8000){}
+ServBlock::ServBlock() : upload_store_(""), listen_(-1){}
 
 ServBlock::~ServBlock(){}
-
-const std::string& ServBlock::getUploadStore(){return upload_store_;}
-const std::string& ServBlock::getServerName(){return server_name_;}
-const int& ServBlock::getListen(){return listen_;}
 
 /**
  * @brief serv_directives_ 반환
@@ -19,9 +15,11 @@ const int& ServBlock::getListen(){return listen_;}
  * @note 템플릿 사용 위해서 반드시 필요
  * @return std::map<std::string, std::string>& 인자로 받아서 변경시키기 위해서 레퍼런스 타입으로 반환함
  */
-std::map<std::string, std::string>& ServBlock::getDirStore(){
-	return (serv_directives_);
-}
+std::map<std::string, std::string>& ServBlock::getDirStore(){return (serv_directives_);}
+const std::string& ServBlock::getUploadStore(){return upload_store_;}
+const std::vector<std::string>& ServBlock::getServerName(){return server_name_;}
+const int& ServBlock::getListen(){return listen_;}
+
 
 /**
  * @brief 블록을 만드는 함수 LocBlock 블록과 otherBlock허용
@@ -61,6 +59,17 @@ void	ServBlock::refineAll(){
 	for (size_t i = 0; i < loc_store_.size(); i++){
 		loc_store_[i].refineAll();
 	}
+}
+
+void	ServBlock::printInfo(){
+	printHttpInfo();
+	std::cout << "\n---------------[Server]------------------\n";
+	std::cout << "upload_store_:|" << upload_store_ << "|\n";
+	std::cout << "[server_name_]\n";
+	for (size_t i = 0;i < server_name_.size(); i++){
+			std::cout << "server_name_[" << i << "]:|" << server_name_[i] << "|\n";
+	}
+	std::cout << "listen:|" << listen_ << "|\n";
 }
 
 /**
@@ -108,13 +117,15 @@ void	ServBlock::makeOtherBlock(std::ifstream& input, int& line_len_){
 
 /**
  * @brief 서버에만 해당하는 데이터를 멤버변수에 담아주는 함수
- *
+ * @details server_name이 설정 안되는 경우가 존재할 수 있다.
+ * [subject] : Setup the server_names or not.
  */
 void	ServBlock::parseServDirective(){
 	std::map<std::string, std::string>::iterator it = serv_directives_.find("server_name");
 	if (it == serv_directives_.end())
-		throw(std::runtime_error("You must at least one server_name!!!"));
-	server_name_	= (*it).second;
+		server_name_.push_back("");
+		// throw(std::runtime_error("You must at least one server_name!!!"));
+	splitAndStore(server_name_, (*it).second, ' ');
 	it = serv_directives_.find("listen");//default_server안 받겠습니다.
 	if (it == serv_directives_.end())
 		throw(std::runtime_error("You must at least one listen!!!"));
