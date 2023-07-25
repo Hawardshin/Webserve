@@ -1,9 +1,29 @@
 #include "LocBlock.hpp"
 
 
-LocBlock::LocBlock(std::string loc_info) : upload_store_(""), loc_info_(loc_info), return_code_(-1), return_path_(""), is_limit_except_(false), cgi_pass_(""){}
+LocBlock::LocBlock(std::string loc_info) : rank_(0), upload_store_(""), loc_info_(loc_info), return_code_(-1), return_path_(""), is_limit_except_(false), cgi_pass_(""), combined_path_(""){}
 
 LocBlock::~LocBlock(){}
+// LocBlock& LocBlock::operator=(const LocBlock& obj){
+// 	root_ = obj.root_;
+// 	index_ = obj.index_;
+// 	autoindex_ = obj.autoindex_;
+// 	client_max_body_size_ = obj.client_max_body_size_;
+// 	error_code_ = obj.error_code_;
+// 	error_page_ = obj.error_page_;
+
+// 	loc_directives_ = obj.loc_directives_;
+// 	upload_store_ = obj.upload_store_;
+// 	loc_info_ = obj.loc_info_;
+// 	return_code_ = obj.return_code_;
+// 	return_path_ = obj.return_path_;
+// 	is_limit_except_ = obj.is_limit_except_;
+// 	cgi_pass_ = obj.cgi_pass_;
+// 	deny_methods_ = obj.deny_methods_;
+// 	combined_path_ = obj.combined_path_;
+// 	return (*this);
+// }
+
 
 /**
  * @brief loc_directives_ 반환
@@ -20,7 +40,7 @@ const std::string& LocBlock::getReturnPath(){return return_path_;}
 const bool& LocBlock::isLimit(){return is_limit_except_;}
 const std::string& LocBlock::getCgiPath(){return cgi_pass_;}
 const std::vector<std::string>& LocBlock::getDenyMethod(){return deny_methods_;}
-
+const int& LocBlock::getRank() const {return rank_;}
 
 /**
  * @brief location block에서는 limit_except 블록만 올 수 있습니다.
@@ -65,7 +85,35 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 void	LocBlock::refineAll(){
 	parseHttpDirective(loc_directives_);
 	parseLocDirective();
+	if (loc_info_ == "/")
+		return ;
+	for (size_t i = 0;i < loc_info_.size(); i++){
+		if (loc_info_[i] == '/')
+			rank_++;
+	}
 }
+
+
+void	LocBlock::printInfo(){
+	printHttpInfo();
+	std::cout << "\n---------------[Location]------------------\n";
+	std::cout << "rank_:|" << rank_ << "|\n";
+	std::cout << "upload_store_:|" << upload_store_ << "|\n";
+	std::cout << "loc_info_:|" << loc_info_ << "|\n";
+	std::cout << "return_code_:|" << return_code_ << "|\n";
+	std::cout << "return_path_:|" << return_path_ << "|\n";
+	std::cout << "is_limit_except_:|" << is_limit_except_ << "|\n";
+	std::cout << "cgi_pass_:|" << cgi_pass_ << "|\n";
+	std::cout << "[deny_methods_]\n";
+	for (size_t i = 0;i < deny_methods_.size(); i++){
+			std::cout << "deny_methods_[" << i << "]:|" << deny_methods_[i] << "|\n";
+	}
+	std::cout << "combined_path_:|" << combined_path_ << "|\n";
+}
+
+
+
+void	LocBlock::setConbinePath(std::string conbine_path){combined_path_ = conbine_path;}
 
 /* private */
 LocBlock::LocBlock(){}
@@ -100,3 +148,6 @@ void	LocBlock::parseReturn(std::string ret_line){
 	return_path_ = tmp[1];
 }
 
+bool cmp(const LocBlock& a, const LocBlock& b){
+	return (a.getRank() > b.getRank());
+}

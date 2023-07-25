@@ -57,9 +57,10 @@ void	ServBlock::refineAll(){
 	if (loc_store_.size() == 0)
 		throw(std::runtime_error("You must input Locaction block least One Block!"));
 	for (size_t i = 0; i < loc_store_.size(); i++){
-		loc_store_[i].setInherit(*this);
+		// loc_store_[i].setInherit(*this);
 		loc_store_[i].refineAll();
 	}
+	std::sort(loc_store_.begin(), loc_store_.end(), cmp);
 }
 
 void	ServBlock::printInfo(){
@@ -71,26 +72,54 @@ void	ServBlock::printInfo(){
 			std::cout << "server_name_[" << i << "]:|" << server_name_[i] << "|\n";
 	}
 	std::cout << "listen:|" << listen_ << "|\n";
+	std::cout << "\n---------------[!!!!!INTO ALL Location Block!!!!!]------------------\n";
+	for (size_t i = 0; i < loc_store_.size(); i++){
+		loc_store_[i].printInfo();
+	}
 }
 
 /**
  * @brief 전달된 경로에 대해서 어떤 규칙을 따라야 하는지 리턴해주는 함수입니다.
  *
- * @todo 여기서 부터 해야됨!!
  * @param http에서 path를 추출해서 원하는 블럭을 얻을 때 사용합니다.
- * @return LocBlock 전딜힌 path에 대해서 해당하는 location block을 리턴해줍니다.
+ * @return LocBlock 전딜힌 path에 대해서 해당하는 location block을 리턴해줍니다. 만약 location블록을 찾을 수 없다면 location블록의 loc_info_와 combined_path_에 "" 가 들어간게 리턴됩니다.
+ * @warning heap buffer overflow 때문에 locblock을 깊은 복사하지 않고 얕은 복사를 진행합니다.
+ * 따라서 여기에 있는 vector나 map을 수정하면 원본 locblock에도 영향이 간다는 것을 알고 진행합시다.
  */
 LocBlock ServBlock::findLocBlock(std::string path){
 	const std::vector<std::string>& serv_index_store = getIndex();
-	for(size_t i = 0; i < serv_index_store.size(); i++){
-		std::string new_path = path + serv_index_store[i];
-		for (size_t i = 0; i < loc_store_.size(); i++){
-			if (path == loc_store_[i].getLocInfo()){
-				const std::vector<std::string>& loc_index_store = loc_store_[i].getIndex();
-			}
-		}
+	int ret = -1;
+	for (size_t i = 0;i < serv_index_store.size(); i++){
+		ret = untilFindLoc(path, root_, serv_index_store[i]);
+		if (ret != -1)
+			break;
 	}
-	return loc_store_[0];
+	LocBlock ret_loc("");
+	if (ret == -1)
+		return ret_loc;
+	ret_loc = loc_store_[ret];
+	ret_loc.setConbinePath(root_ + path + serv_index_store[ret]);
+	return (ret_loc);
+}
+
+/**
+ * @brief 로케이션 block을 찾는 함수입니다.
+ *
+ * @param path http path를 의미합니다.
+ * @param root root가 있는 경우 root를 찾습니다.
+ * @param index index를 붙혀서 같이 찾습니다.
+ * @return int 몇번 째 블록을 보면 되는지 확인합니다.
+ */
+int ServBlock::untilFindLoc(const std::string& path, const std::string& root, const std::string& index){
+	std::string con_path = root + path + index;
+	for(size_t i = 0; i < loc_store_.size(); i++){
+		std::string loc_info = loc_store_[i].getLocInfo();
+		if (con_path.size() < loc_info.size())
+			continue;
+		if (con_path.find(loc_info) == 0)
+			return i;
+	}
+	return (-1);
 }
 
 /*private*/
@@ -134,7 +163,6 @@ void	ServBlock::parseServDirective(){
 	std::map<std::string, std::string>::iterator it = serv_directives_.find("server_name");
 	if (it == serv_directives_.end())
 		server_name_.push_back("");
-		// throw(std::runtime_error("You must at least one server_name!!!"));
 	splitAndStore(server_name_, (*it).second, ' ');
 	it = serv_directives_.find("listen");//default_server안 받겠습니다.
 	if (it == serv_directives_.end())

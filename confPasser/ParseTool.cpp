@@ -1,6 +1,5 @@
 # include "ParseTool.hpp"
 # include "OtherBlock.hpp"
-
 /**
  * @brief 어떤 블록인지 리턴해주는 함수
  *
@@ -83,12 +82,16 @@ void  checkOverFlow(double d){
 void	trimSidesSpace(std::string &line){
 	size_t i;
 	//앞쪽에 스페이스 지운다.
+	if (line == "")
+		return ;
 	for (i = 0; i < line.size();	i++){
 		if (line[i] != '\t' && line[i] != ' ')
 			break;
 	}
 	line.erase(0, i);
 	//뒤쪽의 스페이스와 tab 을 다 지운다.
+	if (line == "")
+		return ;
 	for (i = line.size() - 1; i > 0; i--){
 		if (line[i] != '\t' && line[i] != ' ')
 				break ;
@@ -201,3 +204,6 @@ int stringToInt(const std::string &num){
 	checkOverFlow(ret);
 	return ret;
 }
+
+
+

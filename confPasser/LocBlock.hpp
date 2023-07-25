@@ -18,6 +18,7 @@ class LocBlock : public IBlock, public HttpBase{
 public:
 	LocBlock(std::string loc_info);
 	~LocBlock();
+	// LocBlock& operator=(const LocBlock& obj );
 
 	std::map<std::string, std::string>& getDirStore();
 	const std::string& getUploadStore();
@@ -27,13 +28,19 @@ public:
 	const bool& isLimit();
 	const std::string& getCgiPath();
 	const std::vector<std::string>& getDenyMethod();
+	const int& getRank()const ;
 
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 	void	refineAll();
+	void	printInfo();
+
+	void	setConbinePath(std::string conbie_path);
 private:
 	LocBlock();
 	void	parseLocDirective();
 	void	parseReturn(std::string ret_line);
+
+	int rank_; //depth가 몇번째인지
 	std::map<std::string, std::string> loc_directives_;
 
 	std::string upload_store_;
@@ -43,6 +50,8 @@ private:
 	bool is_limit_except_;
 	std::string cgi_pass_;
 	std::vector<std::string> deny_methods_;
-};
 
+	std::string combined_path_; //여기에 조합된 경로를 넣어준다.(root와 index를 조합해서 결국 반환되는)
+};
+bool cmp(const LocBlock& a, const LocBlock& b);
 #endif

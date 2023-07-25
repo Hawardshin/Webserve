@@ -33,9 +33,9 @@ public:
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 
 	void	refineAll();
-	LocBlock findLocBlock(std::string path);//http에서 path에 해당합니다.
 	void	printInfo();
-private:
+	LocBlock	findLocBlock(std::string path);//http에서 path에 해당합니다.
+	int	untilFindLoc(const std::string& path, const std::string& root, const std::string& index);
 	void	makeLocBlock(std::ifstream& input, int& line_len_, std::string &block_name);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);
 	void	parseServDirective();
