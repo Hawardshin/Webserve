@@ -92,14 +92,10 @@ LocBlock ServBlock::findLocBlock(std::string path){
 	for (size_t i = 0;i < serv_index_store.size(); i++){
 		ret = untilFindLoc(path, root_, serv_index_store[i]);
 		if (ret != -1)
-			break;
+			return (loc_store_[ret]);
 	}
 	LocBlock ret_loc("");
-	if (ret == -1)
-		return ret_loc;
-	ret_loc = loc_store_[ret];
-	ret_loc.setConbinePath(root_ + path + serv_index_store[ret]);
-	return (ret_loc);
+	return ret_loc;
 }
 
 /**
@@ -111,13 +107,35 @@ LocBlock ServBlock::findLocBlock(std::string path){
  * @return int 몇번 째 블록을 보면 되는지 확인합니다.
  */
 int ServBlock::untilFindLoc(const std::string& path, const std::string& root, const std::string& index){
-	std::string con_path = root + path + index;
-	for(size_t i = 0; i < loc_store_.size(); i++){
+	for (size_t i = 0; i < loc_store_.size(); i++){
+		std::string troot = root;
+		if (loc_store_[i].getRoot() != "")
+			troot = loc_store_[i].getRoot();
 		std::string loc_info = loc_store_[i].getLocInfo();
+		std::string con_path = path + index;
+
+		// std::cout << "conf_path" << con_path << "|loc_info" << loc_info << "|\n";
 		if (con_path.size() < loc_info.size())
 			continue;
-		if (con_path.find(loc_info) == 0)
-			return i;
+		if (con_path.find(loc_info) == 0){
+			const std::vector<std::string>& loc_index_store = loc_store_[i].getIndex();
+			if (loc_index_store.size() <= 1 && loc_index_store[0]  == ""){
+				// std::cout << "hi\n";
+				// std::cout <<"conbine" <<troot + path + index << "\n";
+				loc_store_[i].setConbinePath(troot + path + index);
+				return i;
+			}
+			else {
+				// std::cout << "hey\n";
+				for (size_t j = 0; j < loc_index_store.size(); j++){
+					int ret = untilFindLoc(troot, path, loc_index_store[j]);
+					if (ret != -1)
+						return(ret);
+				}
+				loc_store_[i].setConbinePath(troot + path + index);
+				return (i);
+			}
+		}
 	}
 	return (-1);
 }

@@ -1,5 +1,5 @@
 CC = c++
-CFLAGS = -std=c++98 -pedantic  -Wall -Wextra -Werror -fsanitize=address -g3
+CFLAGS = -std=c++98 -pedantic  -Wall -Wextra -Werror -g3 -fsanitize=address
 
 NAME = Passer
 

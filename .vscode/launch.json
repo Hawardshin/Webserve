@@ -1,0 +1,27 @@
+{
+	// lanuch.json
+		// Use IntelliSense to learn about possible attributes.
+		// Hover to view descriptions of existing attributes.
+		// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+		"version": "0.2.0",
+		"configurations": [
+			{
+			"name": "PARSE DEBUG",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/confPasser/Passer",
+			"args": [],
+			"stopAtEntry": true,
+			"cwd": "${workspaceFolder}/confPasser",
+			"environment": [],
+			"externalConsole": true,
+			"osx": {
+				"MIMode": "lldb"
+			},
+			"linux": {
+				"MIMode": "gdb"
+			},
+			"preLaunchTask": "Build Passer"
+			}
+		]
+	}

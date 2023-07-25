@@ -143,8 +143,10 @@ void	splitKeyVal(std::string& key, std::string &value, std::string &line){
  * @warning 들어온 vector에 대해서 clear를 진행한다.
  */
 void	splitAndStore(std::vector<std::string>& store, std::string line, char delimiter){
-	store.clear();
 	trimSidesSpace(line);
+	if (line == "")
+		return ;
+	store.clear();
   std::stringstream ss(line);
   std::string temp;
 	while (getline(ss, temp, delimiter)) {
