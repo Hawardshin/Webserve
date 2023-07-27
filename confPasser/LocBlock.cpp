@@ -67,7 +67,7 @@ std::string LocBlock::getConbineCgiPath()const{
 	return (high_priority_root_ + cgi_pass_);
 }
 
-const std::string& LocBlock::getConbineLocPath()const{return (high_priority_root_);}
+const std::string& LocBlock::getConbineLocPath()const{return (combined_path_);}
 
 /*setter*/
 void	LocBlock::setConbinePath(std::string conbine_path){combined_path_ = conbine_path;}
