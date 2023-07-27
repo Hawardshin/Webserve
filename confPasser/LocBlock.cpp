@@ -24,17 +24,35 @@ LocBlock::~LocBlock(){}
 // 	return (*this);
 // }
 
-/*getter*/
+/*----------------getter (멤버변수 그대로 반환)---------------*/
 const std::string& LocBlock::getUploadStore()const{return upload_store_; }
 const std::string& LocBlock::getLocInfo()const{return loc_info_;}
 const int& LocBlock::getReturnCode()const{return return_code_;}
 const std::string& LocBlock::getReturnPath()const{return return_path_;}
-const bool& LocBlock::isLimit()const{return is_limit_except_;}
 const std::string& LocBlock::getCgiPath()const{return cgi_pass_;}
-const std::vector<std::string>& LocBlock::getDenyMethod()const{return deny_methods_;}
 const int& LocBlock::getRank() const {return rank_;}
 
-/*실제 사용할 경로를 찾아줄 getter*/
+/**
+ * @brief 거부하는 메서드가 있는지 확인하는 함수
+ * @return true 거부하는 메서드가 있다.
+ * @return false 거부하는 메서드가 없다.
+ */
+const bool& LocBlock::isLimit()const{return is_limit_except_;}
+
+/**
+ * @brief 거부하는 메서드를 벡터로 반환
+ * @note 이걸 사용하기 전에 isLimit() 함수 호출로 확인해봅시다.
+ *
+ * @return const std::vector<std::string>&
+ */
+const std::vector<std::string>& LocBlock::getDenyMethod()const{return deny_methods_;}
+
+
+/*----------실제 사용할 경로를 찾아줄 getter (for user)-----------*/
+/**
+ * @brief error_page경로를 root를 붙혀서 반환하는 함수
+ * @return std::string root를 붙힌 error_page 경로
+ */
 std::string LocBlock::getConbineErrorPath()const{
 	if (error_page_ == "")
 		return (error_page_);
@@ -43,6 +61,10 @@ std::string LocBlock::getConbineErrorPath()const{
 	return (high_priority_root_ + error_page_);
 }
 
+/**
+ * @brief upload_store경로를 root를 붙혀서 반환하는 함수
+ * @return std::string root를 붙힌 upload_store 경로
+ */
 std::string LocBlock::getConbineUploadStorePath()const{
 	if (upload_store_ == "")
 		return (upload_store_);
@@ -51,6 +73,10 @@ std::string LocBlock::getConbineUploadStorePath()const{
 	return (high_priority_root_ + upload_store_);
 }
 
+/**
+ * @brief 리다이렉션 경로를 root를 붙혀서 반환하는 함수
+ * @return std::string root를 붙힌 리다이렉션 경로
+ */
 std::string LocBlock::getConbineReturnPath()const{
 	if (return_path_ == "")
 		return (return_path_);
@@ -59,6 +85,10 @@ std::string LocBlock::getConbineReturnPath()const{
 	return (high_priority_root_ + return_path_);
 }
 
+/**
+ * @brief cgi경로를 root를 붙혀서 반환하는 함수
+ * @return std::string root를 붙힌 cgi의 경로
+ */
 std::string LocBlock::getConbineCgiPath()const{
 	if (cgi_pass_ == "")
 		return (cgi_pass_);
@@ -67,11 +97,27 @@ std::string LocBlock::getConbineCgiPath()const{
 	return (high_priority_root_ + cgi_pass_);
 }
 
+/**
+ * @brief 로케이션 블럭이 index를 거쳐서 붙은 root경로까지 붙힌 완성된 파일 경로
+ * @return const std::string& 실제로 접근해서 확인해볼 경로
+ */
 const std::string& LocBlock::getConbineLocPath()const{return (combined_path_);}
 
-/*setter*/
+/*--------setter-------------*/
 void	LocBlock::setConbinePath(std::string conbine_path){combined_path_ = conbine_path;}
 void	LocBlock::setHighPriorityRoot(const std::string & root){high_priority_root_ = root;}
+
+/**
+ * @brief 반환된 블럭이 에러인지 아닌지 여부 확인
+ *
+ * @return true 해당하는 location block이 없어서 나온 에러 블럭입니다.
+ * @return false 에러 블럭이 아닙니다.
+ */
+bool LocBlock::isErrorBlock()const{
+	if (combined_path_ == "")
+		return true;
+	return false;
+}
 
 /**
  * @brief location block의 모든 directive를 정제하는 함수
@@ -114,7 +160,7 @@ void	LocBlock::printInfo()const{
 }
 
 
-/* 사용자가 호출하지 않는 public 함수 (재귀 템플릿 때문에 public.) */
+/* -------사용자가 호출하지 않는 public 함수 (재귀 템플릿 때문에 public.) ----------*/
 /**
  * @brief location block에서는 limit_except 블록만 올 수 있습니다.
  *
@@ -158,6 +204,8 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
  * @return std::map<std::string, std::string>& 인자로 받아서 변경시키기 위해서 레퍼런스 타입으로 반환함
  */
 std::map<std::string, std::string>& LocBlock::getDirStore(){return (loc_directives_);}
+
+
 /* private */
 LocBlock::LocBlock(){}
 
@@ -190,7 +238,9 @@ void	LocBlock::parseReturn(std::string ret_line){
 	return_path_ = tmp[1];
 }
 
-// rank를 기반으로 sort 하기 위해서 있는 외부 함수
+/**
+ * @brief rank를 기반으로 sort 하기 위해서 있는 외부 함수
+ */
 bool cmp(const LocBlock& a, const LocBlock& b){
 	return (a.getRank() > b.getRank());
 }

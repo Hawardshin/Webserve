@@ -33,23 +33,10 @@ typedef enum methodtype{
 // UNLOCK,
 // MKCOL //디렉토리 만드는 method
 
-// typedef enum directive{
-// 	ROOT,
-// 	INDEX,
-// 	AUTOINDEX,
-// 	CLINET_MAX_BODY_SIZE,
-// 	ERROR_PAGE,
-// 	SERVER_NAME,
-// 	LISTEN,
-// 	UPLOAD_STORE,
-// 	RETURN,
-// 	CGI_PASS,
-// 	OTHER_DIRECTIVE
-// } e_directive;
 
 e_block	checkBlockName(const std::string& block_name);
 e_method checkMethodName(const std::string &block_name);
-// e_directive checkDirective(const std::string& block_name);
+
 void  checkOverFlow(double d);
 
 void	trimSidesSpace(std::string &line);

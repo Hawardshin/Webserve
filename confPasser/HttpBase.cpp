@@ -11,12 +11,17 @@ const int& HttpBase::getClientMaxBodySize() const{return client_max_body_size_;}
 const std::vector<int>& HttpBase::getErrorCode() const{return error_code_;}
 const std::string& HttpBase::getErrorPage() const{return error_page_;}
 
-//root까지 붙혀준 ErrorPath입니다.
+/**
+ * @brief Root 까지 붙혀준 ErrorPage위치를 반환하는 함수
+ *
+ * @return std::string error_page 위치
+ * @note 이 함수로 error_page의 경로를 찾습니다.
+ */
 std::string HttpBase::getConbineErrorPath()const{
 	if (error_page_ == "")
 		return (error_page_);
 	return root_+error_page_;
-	}
+}
 
 /**
  * @brief httpbase에 있는 멤버변수 정보를 보여주는 함수
@@ -54,7 +59,6 @@ void	HttpBase::setInherit(HttpBase &base){
 }
 
 /* Private */
-
 /**
  * @brief map에 잘려있는 값들을 사용할 수 있게 정제해준다.
  * @param dir_store 해당하는 map값

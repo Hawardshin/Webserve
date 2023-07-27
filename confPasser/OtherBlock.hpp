@@ -11,6 +11,7 @@ class OtherBlock : public IBlock{
 	public :
 		OtherBlock();
 		virtual ~OtherBlock();
+
 		std::map<std::string, std::string>& getDirStore();
 		void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 

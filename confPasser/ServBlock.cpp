@@ -13,7 +13,11 @@ const std::string& ServBlock::getUploadStore()const{return upload_store_;}
 const std::vector<std::string>& ServBlock::getServerName()const{return server_name_;}
 const int& ServBlock::getListen()const{return listen_;}
 
-/*실제 사용할 경로를 찾아줄 getter*/
+/**
+ * @brief 실제 사용할 경로를 찾아줄 getter
+ *
+ * @return std::string 실제로 사용할 uploadstore 경로
+ */
 std::string ServBlock::getConbineUploadStorePath()const{
 	if (upload_store_ == "")
 		return (upload_store_);
@@ -53,6 +57,7 @@ LocBlock ServBlock::findLocBlock(std::string path){
 	LocBlock ret_loc("");
 	return ret_loc;
 }
+
 /**
  * @brief serverBlock의 모든 정보를 출력하면서 Server block이 담고있는 모든 location Block의 정보까지 출력하는 함수
  *
@@ -71,6 +76,18 @@ void	ServBlock::printInfo()const{
 		loc_store_[i].printInfo();
 	}
 }
+
+/**
+ * @brief 에러 블럭인지 아닌지 확인하는 함수
+ *
+ * @return true 에러블럭이다.
+ * @return false 에러블럭이 아니다.
+ */
+	bool ServBlock::isErrorBlock()const{
+		if (listen_ == -1)
+			return (true);
+		return false;
+	}
 
 /* 사용자가 호출하지 않는 public 함수 (재귀 템플릿 때문에 public.) */
 /**

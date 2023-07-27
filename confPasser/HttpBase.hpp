@@ -16,22 +16,21 @@ public :
 	const std::string& getErrorPage()const;
 
 	/*실제 사용할 경로를 찾아줄 getter*/
-	//root까지 붙혀준 ErrorPath입니다.
 	virtual std::string getConbineErrorPath()const;
 
 	void	printHttpInfo()const;
 	void	setInherit(HttpBase &base);
-
 protected :
 	void	parseHttpDirective(std::map<std::string, std::string>& dir_store);
 	void	setAutoIndex(const std::string& value);
 	void	setErrorPage(const std::string& line);
+
 	std::string root_;
 	std::vector<std::string> index_;
-	bool autoindex_;
-	int client_max_body_size_;
+	bool autoindex_;//on 일때 true
+	int client_max_body_size_;//없으면 0
 	std::vector<int> error_code_;
-	std::string error_page_;
+	std::string error_page_;//에러페이지의 경로 (root를 안 붙힌상태)
 };
 
 #endif

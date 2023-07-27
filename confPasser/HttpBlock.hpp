@@ -41,12 +41,13 @@ public:
 	ServBlock findServBlock(int port_num, std::string serv_name)const;
 	void	printInfo()const;
 
-	//사용자가 직접 호출할 일 없는 함수들 (for template)
+	/*사용자가 직접 호출할 일 없는 함수들 (for template)*/
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
 private:
 	void	makeServerBlock(std::ifstream& input, int& line_len_);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);
+
 	std::vector<ServBlock> serv_store_;
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> http_directives_;

@@ -37,6 +37,7 @@ public:
 	void	refineAll();
 	LocBlock	findLocBlock(std::string path);
 	void	printInfo()const;
+	bool isErrorBlock()const;
 
 	//사용자가 직접 호출할 일 없는 함수들 (for template)
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
