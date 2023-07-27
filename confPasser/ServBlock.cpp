@@ -14,7 +14,11 @@ const std::vector<std::string>& ServBlock::getServerName()const{return server_na
 const int& ServBlock::getListen()const{return listen_;}
 
 /*실제 사용할 경로를 찾아줄 getter*/
-std::string ServBlock::getConbineUploadStorePath()const{return(root_ + upload_store_);}
+std::string ServBlock::getConbineUploadStorePath()const{
+	if (upload_store_ == "")
+		return (upload_store_);
+	return(root_ + upload_store_);
+}
 
 /**
  * @brief 모든 server block의 데이터를 사용가능하도록 map에 담긴걸 클래스 멤버에 사용하기 좋은 값으로 담아주는 함수

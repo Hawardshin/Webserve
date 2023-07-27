@@ -109,6 +109,7 @@ void	LocBlock::printInfo()const{
 	std::cout << "getConbineErrorPath:|" << getConbineErrorPath()<< "|\n";
 	std::cout << "getConbineUploadStorePath:|" << getConbineUploadStorePath()<< "|\n";
 	std::cout << "getConbineReturnPath:|" << getConbineReturnPath()<< "|\n";
+	std::cout << "getConbineCgiPath:|" << getConbineCgiPath()<< "|\n";
 	std::cout << "getConbineLocPath:|" << getConbineLocPath()<< "|\n";
 }
 

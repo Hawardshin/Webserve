@@ -12,7 +12,11 @@ const std::vector<int>& HttpBase::getErrorCode() const{return error_code_;}
 const std::string& HttpBase::getErrorPage() const{return error_page_;}
 
 //root까지 붙혀준 ErrorPath입니다.
-std::string HttpBase::getConbineErrorPath()const{return root_+error_page_;}
+std::string HttpBase::getConbineErrorPath()const{
+	if (error_page_ == "")
+		return (error_page_);
+	return root_+error_page_;
+	}
 
 /**
  * @brief httpbase에 있는 멤버변수 정보를 보여주는 함수
