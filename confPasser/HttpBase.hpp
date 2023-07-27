@@ -15,6 +15,10 @@ public :
 	const std::vector<int>& getErrorCode()const;
 	const std::string& getErrorPage()const;
 
+	/*실제 사용할 경로를 찾아줄 getter*/
+	//root까지 붙혀준 ErrorPath입니다.
+	virtual std::string getConbineErrorPath()const;
+
 	void	printHttpInfo()const;
 	void	setInherit(HttpBase &base);
 

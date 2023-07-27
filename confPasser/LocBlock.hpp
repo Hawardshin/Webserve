@@ -30,8 +30,16 @@ public:
 	const std::vector<std::string>& getDenyMethod()const;
 	const int& getRank()const ;
 
-/*setter*/
+	/*실제 사용할 경로를 찾아줄 getter*/
+	virtual std::string getConbineErrorPath()const;
+	std::string getConbineUploadStorePath()const;
+	std::string getConbineReturnPath()const;
+	std::string getConbineCgiPath()const;
+	const std::string& getConbineLocPath()const;
+
+	/*setter*/
 	void	setConbinePath(std::string conbie_path);
+	void	setHighPriorityRoot(const std::string& root);
 
 	void	refineAll();
 	void	printInfo()const;
@@ -55,6 +63,7 @@ private:
 	std::vector<std::string> deny_methods_;
 
 	std::string combined_path_; //여기에 조합된 경로를 넣어준다.(root와 index를 조합해서 결국 반환되는)
+	std::string high_priority_root_;
 };
 bool cmp(const LocBlock& a, const LocBlock& b);
 #endif

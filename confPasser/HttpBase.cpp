@@ -11,6 +11,9 @@ const int& HttpBase::getClientMaxBodySize() const{return client_max_body_size_;}
 const std::vector<int>& HttpBase::getErrorCode() const{return error_code_;}
 const std::string& HttpBase::getErrorPage() const{return error_page_;}
 
+//root까지 붙혀준 ErrorPath입니다.
+std::string HttpBase::getConbineErrorPath()const{return root_+error_page_;}
+
 /**
  * @brief httpbase에 있는 멤버변수 정보를 보여주는 함수
  * @note 상속 받아서 모든 클래스 Block에서 사용

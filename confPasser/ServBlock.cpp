@@ -13,6 +13,9 @@ const std::string& ServBlock::getUploadStore()const{return upload_store_;}
 const std::vector<std::string>& ServBlock::getServerName()const{return server_name_;}
 const int& ServBlock::getListen()const{return listen_;}
 
+/*실제 사용할 경로를 찾아줄 getter*/
+std::string ServBlock::getConbineUploadStorePath()const{return(root_ + upload_store_);}
+
 /**
  * @brief 모든 server block의 데이터를 사용가능하도록 map에 담긴걸 클래스 멤버에 사용하기 좋은 값으로 담아주는 함수
  */
@@ -122,6 +125,7 @@ int ServBlock::untilFindLoc(const std::string& path, const std::string& root, co
 			const std::vector<std::string>& loc_index_store = loc_store_[i].getIndex();
 			if (loc_index_store.size() <= 1 && loc_index_store[0]  == ""){
 				loc_store_[i].setConbinePath(troot + path + index);
+				loc_store_[i].setHighPriorityRoot(troot);
 				return i;
 			}
 			else {
@@ -130,6 +134,7 @@ int ServBlock::untilFindLoc(const std::string& path, const std::string& root, co
 					if (ret != -1)
 						return(ret);
 				}
+				loc_store_[i].setHighPriorityRoot(troot);
 				loc_store_[i].setConbinePath(troot + path + index);
 				return (i);
 			}

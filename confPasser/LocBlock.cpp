@@ -1,7 +1,7 @@
 #include "LocBlock.hpp"
 
 
-LocBlock::LocBlock(std::string loc_info) : rank_(0), upload_store_(""), loc_info_(loc_info), return_code_(-1), return_path_(""), is_limit_except_(false), cgi_pass_(""), combined_path_(""){}
+LocBlock::LocBlock(std::string loc_info) : rank_(0), upload_store_(""), loc_info_(loc_info), return_code_(-1), return_path_(""), is_limit_except_(false), cgi_pass_(""), combined_path_(""),high_priority_root_(""){}
 
 LocBlock::~LocBlock(){}
 // LocBlock& LocBlock::operator=(const LocBlock& obj){
@@ -34,8 +34,44 @@ const std::string& LocBlock::getCgiPath()const{return cgi_pass_;}
 const std::vector<std::string>& LocBlock::getDenyMethod()const{return deny_methods_;}
 const int& LocBlock::getRank() const {return rank_;}
 
+/*실제 사용할 경로를 찾아줄 getter*/
+std::string LocBlock::getConbineErrorPath()const{
+	if (error_page_ == "")
+		return (error_page_);
+	if (high_priority_root_ == "")
+		return(root_ + error_page_);
+	return (high_priority_root_ + error_page_);
+}
+
+std::string LocBlock::getConbineUploadStorePath()const{
+	if (upload_store_ == "")
+		return (upload_store_);
+	if (high_priority_root_ == "")
+		return(root_ + upload_store_);
+	return (high_priority_root_ + upload_store_);
+}
+
+std::string LocBlock::getConbineReturnPath()const{
+	if (return_path_ == "")
+		return (return_path_);
+	if (high_priority_root_ == "")
+		return(root_ + return_path_);
+	return (high_priority_root_ + return_path_);
+}
+
+std::string LocBlock::getConbineCgiPath()const{
+	if (cgi_pass_ == "")
+		return (cgi_pass_);
+	if (high_priority_root_ == "")
+		return(root_ + cgi_pass_);
+	return (high_priority_root_ + cgi_pass_);
+}
+
+const std::string& LocBlock::getConbineLocPath()const{return (high_priority_root_);}
+
 /*setter*/
 void	LocBlock::setConbinePath(std::string conbine_path){combined_path_ = conbine_path;}
+void	LocBlock::setHighPriorityRoot(const std::string & root){high_priority_root_ = root;}
 
 /**
  * @brief location block의 모든 directive를 정제하는 함수
@@ -69,7 +105,11 @@ void	LocBlock::printInfo()const{
 	for (size_t i = 0;i < deny_methods_.size(); i++){
 			std::cout << "deny_methods_[" << i << "]:|" << deny_methods_[i] << "|\n";
 	}
-	std::cout << "combined_path_:|" << combined_path_ << "|\n";
+	std::cout << "[Print All conbine Path]\n";
+	std::cout << "getConbineErrorPath:|" << getConbineErrorPath()<< "|\n";
+	std::cout << "getConbineUploadStorePath:|" << getConbineUploadStorePath()<< "|\n";
+	std::cout << "getConbineReturnPath:|" << getConbineReturnPath()<< "|\n";
+	std::cout << "getConbineLocPath:|" << getConbineLocPath()<< "|\n";
 }
 
 
