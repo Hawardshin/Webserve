@@ -20,21 +20,24 @@ public:
 	~LocBlock();
 	// LocBlock& operator=(const LocBlock& obj );
 
-	std::map<std::string, std::string>& getDirStore();
-	const std::string& getUploadStore();
-	const std::string& getLocInfo();
-	const int& getReturnCode();
-	const std::string& getReturnPath();
-	const bool& isLimit();
-	const std::string& getCgiPath();
-	const std::vector<std::string>& getDenyMethod();
+	/*getter*/
+	const std::string& getUploadStore()const;
+	const std::string& getLocInfo()const;
+	const int& getReturnCode()const;
+	const std::string& getReturnPath()const;
+	const bool& isLimit()const;
+	const std::string& getCgiPath()const;
+	const std::vector<std::string>& getDenyMethod()const;
 	const int& getRank()const ;
 
-	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
-	void	refineAll();
-	void	printInfo();
-
+/*setter*/
 	void	setConbinePath(std::string conbie_path);
+
+	void	refineAll();
+	void	printInfo()const;
+
+	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
+	std::map<std::string, std::string>& getDirStore();
 private:
 	LocBlock();
 	void	parseLocDirective();

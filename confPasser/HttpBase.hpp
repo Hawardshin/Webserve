@@ -6,16 +6,20 @@ class HttpBase
 public :
 	HttpBase();
 	virtual ~HttpBase();
-	void	parseHttpDirective(std::map<std::string, std::string>& dir_store);
-	const std::string& getRoot();
-	const std::vector<std::string>& getIndex();
-	const bool& isAutoIndex();
-	const int& getClientMaxBodySize();
-	const std::vector<int>& getErrorCode();
-	const std::string& getErrorPage();
-	void	printHttpInfo();
+
+	/*getter*/
+	const std::string& getRoot()const;
+	const std::vector<std::string>& getIndex()const;
+	const bool& isAutoIndex()const;
+	const int& getClientMaxBodySize()const;
+	const std::vector<int>& getErrorCode()const;
+	const std::string& getErrorPage()const;
+
+	void	printHttpInfo()const;
 	void	setInherit(HttpBase &base);
+
 protected :
+	void	parseHttpDirective(std::map<std::string, std::string>& dir_store);
 	void	setAutoIndex(const std::string& value);
 	void	setErrorPage(const std::string& line);
 	std::string root_;

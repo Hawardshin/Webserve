@@ -2,26 +2,17 @@
 
 /* public */
 
+/**
+ * @brief 기본 생성자가 호출되면 conf파일의 경로를 default.conf파일로 설정합니다.
+ */
 ConfParser::ConfParser():file_name_("./default.conf"), line_len_(0){}
 ConfParser::~ConfParser(){}
 
 /**
- * @brief Get the root_directives_ 클래스 멤버를 반환해서 레퍼런스로 사용하려고 다음과 같은 함수를 반들었습니다.
- *
- * @return std::map<std::string, std::string>& 클래스 맴버인 map 레퍼런스
+ * @brief 파일이름이 있는 경우만 호출하는 conf파일 경로 초기화 함수.
+ * @param argv conf 파일의 경로
  */
-std::map<std::string, std::string>& ConfParser::getDirStore(){
-	return (root_directives_);
-}
-
-/**
- * @brief 파일이름이 있는 경우만 호출합니다.
- *
- * @param argv 파일의 경로z
- */
-void	ConfParser::confPathInit(char* path){
-	file_name_ = path;
-}
+void	ConfParser::setConfPath(char* path){file_name_ = path;}
 
 /**
  * @brief conf파일을 열어서 conf파일을 http_store 벡터에 저장해줍니다.
@@ -50,18 +41,34 @@ void  ConfParser::confInit(){
 }
 
 /**
+ * @brief 이 함수를 호출함으로써 map에만 담긴 데이터들은 http, server location블록 모두 클래스에 필요한 데이터에 담김니다.
+ */
+void	ConfParser::refineDirective(){http_store_[0].refineAll();}
+
+/**
+ * @brief 포트번호와 host_name을 인자로 넣어주면 그에 해당하는 정보를 가진 서버 블록을 반환합니다.
+ *
+ * @param port_num 요청이 온 포트번호
+ * @param serv_name http에서 host_name에 해당
+ * @return ServBlock 해당하는 서버블록
+ */
+ServBlock	ConfParser::getServBlock(int port_num, std::string serv_name)const {return (http_store_[0].findServBlock(port_num, serv_name));}
+
+
+/* 사용자가 호출하지 않는 public 함수 (재귀 템플릿 때문에 public.) */
+
+/**
  * @brief 새로운 블록을 만드는 함수 블록은 오직 "http {"
  * 또는 "블록_이름 {" 로 들어오는 것만 올바른 블록이라 인식했습니다.
  *
- * @param line "블록 명{" 이렇게 들어온 한 줄
+ * @param line "블록 명{" 이렇게 들어온 한 줄 (이 함수에서는 인터페이스와 재귀를 위해서 사용하지 않는 인자를 넣어줬습니다.)
  * @param input 열어 ifstream으로 열어둔 conf파일
  */
 void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len){
+	(void)line_len;
 	size_t pos = line.find('{');
 	std::string block_name = line.substr(0, pos);
 	trimSidesSpace(block_name);
-	// std::cout << "5. |" << block_name << "|"<< std::endl;
-	(void)line_len;
 	if (pos != line.size() - 1 || block_name == "")
 		throw(std::runtime_error("block name in ERROR"));
 	switch(checkBlockName(block_name)){
@@ -75,20 +82,14 @@ void	ConfParser::makeBlock(std::string line, std::ifstream& input, int &line_len
 }
 
 /**
- * @brief 이 함수를 호출함으로써 map에만 담긴 데이터들은 http, server location블록 모두 클래스에 필요한 데이터에 담김니다.
+ * @brief root_directives_ 맵을 반환하는 함수
  *
+ * @note 클래스 멤버를 레퍼런스로 반환(재귀 함수 사용 위해)
+ * @return std::map<std::string, std::string>& 클래스 맴버인 map 레퍼런스
  */
-void	ConfParser::refineDirective(){
-	http_store_[0].refineAll();
-	// http_store_[0].parseHttpDirective(http_store_[0].getDirStore());
-}
-
-ServBlock	ConfParser::getServBlock(int port_num, std::string serv_name){
-	return (http_store_[0].findServBlock(port_num, serv_name));
-}
+std::map<std::string, std::string>& ConfParser::getDirStore(){return (root_directives_);}
 
 /* private */
-
 /**
  * @brief HTTP 블록을 만드는 함수
  * @warning HTTP는 오직 1개의 블록만 올 수 있습니다.
@@ -113,4 +114,3 @@ void	ConfParser::makeOtherBlock(std::ifstream& input){
 	other_store_.push_back(new_block);
 	parseUntilEnd(input, line_len_, other_store_[other_store_.size() - 1]);
 }
-

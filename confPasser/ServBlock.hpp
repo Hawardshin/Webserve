@@ -25,20 +25,25 @@
 class ServBlock : public IBlock, public HttpBase{
 public:
 	ServBlock();
-	~ServBlock();
-	std::map<std::string, std::string>& getDirStore();
-	const std::string& getUploadStore();
-	const std::vector<std::string>&  getServerName();
-	const int& getListen();
-	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
+	virtual ~ServBlock();
+
+	const std::string& getUploadStore()const;
+	const std::vector<std::string>&  getServerName()const;
+	const int& getListen()const;
 
 	void	refineAll();
-	void	printInfo();
-	LocBlock	findLocBlock(std::string path);//http에서 path에 해당합니다.
+	LocBlock	findLocBlock(std::string path);
+	void	printInfo()const;
+
+	//사용자가 직접 호출할 일 없는 함수들 (for template)
+	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
+	std::map<std::string, std::string>& getDirStore();
+private :
 	int	untilFindLoc(const std::string& path, const std::string& root, const std::string& index);
 	void	makeLocBlock(std::ifstream& input, int& line_len_, std::string &block_name);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);
 	void	parseServDirective();
+
 	std::vector<LocBlock> loc_store_;
 	std::vector<OtherBlock> other_store_;
 	std::map<std::string, std::string> serv_directives_;

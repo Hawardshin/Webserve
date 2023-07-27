@@ -35,12 +35,15 @@
 class HttpBlock : public IBlock, public HttpBase{
 public:
 	HttpBlock();
-	~HttpBlock();
-	ServBlock findServBlock(int port_num, std::string serv_name);
+	virtual ~HttpBlock();
+
+	void	refineAll();
+	ServBlock findServBlock(int port_num, std::string serv_name)const;
+	void	printInfo()const;
+
+	//사용자가 직접 호출할 일 없는 함수들 (for template)
 	std::map<std::string, std::string>& getDirStore();
 	void	makeBlock(std::string line, std::ifstream& input, int& line_len_);
-	void	refineAll();
-	void	printInfo();
 private:
 	void	makeServerBlock(std::ifstream& input, int& line_len_);
 	void	makeOtherBlock(std::ifstream& input, int& line_lne_);

@@ -24,24 +24,56 @@ LocBlock::~LocBlock(){}
 // 	return (*this);
 // }
 
-
-/**
- * @brief loc_directives_ 반환
- *
- * @note 템플릿 사용 위해서 반드시 필요
- * @return std::map<std::string, std::string>& 인자로 받아서 변경시키기 위해서 레퍼런스 타입으로 반환함
- */
-std::map<std::string, std::string>& LocBlock::getDirStore(){return (loc_directives_);}
-
-const std::string& LocBlock::getUploadStore(){return upload_store_; }
-const std::string& LocBlock::getLocInfo(){return loc_info_;}
-const int& LocBlock::getReturnCode(){return return_code_;}
-const std::string& LocBlock::getReturnPath(){return return_path_;}
-const bool& LocBlock::isLimit(){return is_limit_except_;}
-const std::string& LocBlock::getCgiPath(){return cgi_pass_;}
-const std::vector<std::string>& LocBlock::getDenyMethod(){return deny_methods_;}
+/*getter*/
+const std::string& LocBlock::getUploadStore()const{return upload_store_; }
+const std::string& LocBlock::getLocInfo()const{return loc_info_;}
+const int& LocBlock::getReturnCode()const{return return_code_;}
+const std::string& LocBlock::getReturnPath()const{return return_path_;}
+const bool& LocBlock::isLimit()const{return is_limit_except_;}
+const std::string& LocBlock::getCgiPath()const{return cgi_pass_;}
+const std::vector<std::string>& LocBlock::getDenyMethod()const{return deny_methods_;}
 const int& LocBlock::getRank() const {return rank_;}
 
+/*setter*/
+void	LocBlock::setConbinePath(std::string conbine_path){combined_path_ = conbine_path;}
+
+/**
+ * @brief location block의 모든 directive를 정제하는 함수
+ * @note location block의 rank를 설정해준다.
+ */
+void	LocBlock::refineAll(){
+	parseHttpDirective(loc_directives_);
+	parseLocDirective();
+	if (loc_info_ == "/")
+		return ;
+	for (size_t i = 0;i < loc_info_.size(); i++){
+		if (loc_info_[i] == '/')
+			rank_++;
+	}
+}
+
+/**
+ * @brief location block 멤버변수 출력하는 함수(http info까지 같이)
+ */
+void	LocBlock::printInfo()const{
+	printHttpInfo();
+	std::cout << "\n---------------[Location]------------------\n";
+	std::cout << "rank_:|" << rank_ << "|\n";
+	std::cout << "upload_store_:|" << upload_store_ << "|\n";
+	std::cout << "loc_info_:|" << loc_info_ << "|\n";
+	std::cout << "return_code_:|" << return_code_ << "|\n";
+	std::cout << "return_path_:|" << return_path_ << "|\n";
+	std::cout << "is_limit_except_:|" << is_limit_except_ << "|\n";
+	std::cout << "cgi_pass_:|" << cgi_pass_ << "|\n";
+	std::cout << "[deny_methods_]\n";
+	for (size_t i = 0;i < deny_methods_.size(); i++){
+			std::cout << "deny_methods_[" << i << "]:|" << deny_methods_[i] << "|\n";
+	}
+	std::cout << "combined_path_:|" << combined_path_ << "|\n";
+}
+
+
+/* 사용자가 호출하지 않는 public 함수 (재귀 템플릿 때문에 public.) */
 /**
  * @brief location block에서는 limit_except 블록만 올 수 있습니다.
  *
@@ -79,48 +111,17 @@ void	LocBlock::makeBlock(std::string line, std::ifstream& input, int& line_len_)
 }
 
 /**
- * @brief location block의 모든 directive를 정제하는 함수
+ * @brief loc_directives_ 반환
  *
+ * @note 템플릿 사용 위해서 반드시 필요
+ * @return std::map<std::string, std::string>& 인자로 받아서 변경시키기 위해서 레퍼런스 타입으로 반환함
  */
-void	LocBlock::refineAll(){
-	parseHttpDirective(loc_directives_);
-	parseLocDirective();
-	if (loc_info_ == "/")
-		return ;
-	for (size_t i = 0;i < loc_info_.size(); i++){
-		if (loc_info_[i] == '/')
-			rank_++;
-	}
-}
-
-
-void	LocBlock::printInfo(){
-	printHttpInfo();
-	std::cout << "\n---------------[Location]------------------\n";
-	std::cout << "rank_:|" << rank_ << "|\n";
-	std::cout << "upload_store_:|" << upload_store_ << "|\n";
-	std::cout << "loc_info_:|" << loc_info_ << "|\n";
-	std::cout << "return_code_:|" << return_code_ << "|\n";
-	std::cout << "return_path_:|" << return_path_ << "|\n";
-	std::cout << "is_limit_except_:|" << is_limit_except_ << "|\n";
-	std::cout << "cgi_pass_:|" << cgi_pass_ << "|\n";
-	std::cout << "[deny_methods_]\n";
-	for (size_t i = 0;i < deny_methods_.size(); i++){
-			std::cout << "deny_methods_[" << i << "]:|" << deny_methods_[i] << "|\n";
-	}
-	std::cout << "combined_path_:|" << combined_path_ << "|\n";
-}
-
-
-
-void	LocBlock::setConbinePath(std::string conbine_path){combined_path_ = conbine_path;}
-
+std::map<std::string, std::string>& LocBlock::getDirStore(){return (loc_directives_);}
 /* private */
 LocBlock::LocBlock(){}
 
 /**
  * @brief location 블록에만 해당하는 값들을 정제
- *
  */
 void	LocBlock::parseLocDirective(){
 	std::map<std::string, std::string>::iterator it = loc_directives_.find("upload_store");
@@ -148,6 +149,7 @@ void	LocBlock::parseReturn(std::string ret_line){
 	return_path_ = tmp[1];
 }
 
+// rank를 기반으로 sort 하기 위해서 있는 외부 함수
 bool cmp(const LocBlock& a, const LocBlock& b){
 	return (a.getRank() > b.getRank());
 }

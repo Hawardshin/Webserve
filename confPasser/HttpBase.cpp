@@ -1,17 +1,21 @@
 # include "HttpBase.hpp"
 
-
-HttpBase::HttpBase() :  root_(""), autoindex_(false), client_max_body_size_(-1), error_page_(""){}
+HttpBase::HttpBase() :  root_(""), autoindex_(false), client_max_body_size_(0), error_page_(""){}
 HttpBase:: ~HttpBase(){}
-const std::string& HttpBase::getRoot(){return root_;}
-const std::vector<std::string>& HttpBase::getIndex(){return index_;}
-const bool& HttpBase::isAutoIndex(){return autoindex_;}
-const int& HttpBase::getClientMaxBodySize(){return client_max_body_size_;}
-const std::vector<int>& HttpBase::getErrorCode(){return error_code_;}
-const std::string& HttpBase::getErrorPage(){return error_page_;}
 
+/*getter*/
+const std::string& HttpBase::getRoot() const{return root_;}
+const std::vector<std::string>& HttpBase::getIndex() const{return index_;}
+const bool& HttpBase::isAutoIndex() const{return autoindex_;}
+const int& HttpBase::getClientMaxBodySize() const{return client_max_body_size_;}
+const std::vector<int>& HttpBase::getErrorCode() const{return error_code_;}
+const std::string& HttpBase::getErrorPage() const{return error_page_;}
 
-void	HttpBase::printHttpInfo(){
+/**
+ * @brief httpbase에 있는 멤버변수 정보를 보여주는 함수
+ * @note 상속 받아서 모든 클래스 Block에서 사용
+ */
+void	HttpBase::printHttpInfo()const{
 	std::cout << "\n---------------[http]------------------\n";
 	std::cout << "root:|" << root_ << "|\n";
 	std::cout << "[index]\n";
@@ -27,6 +31,11 @@ void	HttpBase::printHttpInfo(){
 	std::cout << "error_page:|" << error_page_ << "|\n";
 }
 
+/**
+ * @brief 다른 HttpBase클래스의 멤버변수를 가져오는 함수입니다.
+ * @note 주로 부모 클래스의 내용을 상속을 받을 때 사용합니다.
+ * @param base 업캐스팅된 부모 블록 클래스
+ */
 void	HttpBase::setInherit(HttpBase &base){
 	autoindex_ = base.autoindex_;
 	root_ = base.root_;
@@ -37,9 +46,10 @@ void	HttpBase::setInherit(HttpBase &base){
 	error_page_ = base.error_page_;
 }
 
+/* Private */
+
 /**
- * @brief map에 이미 다 들어있는데 그 값을 사용할 수 있게 정제해준다.
- *
+ * @brief map에 잘려있는 값들을 사용할 수 있게 정제해준다.
  * @param dir_store 해당하는 map값
  */
 void	HttpBase::parseHttpDirective(std::map<std::string, std::string>& dir_store){
@@ -58,7 +68,6 @@ void	HttpBase::parseHttpDirective(std::map<std::string, std::string>& dir_store)
 
 /**
  * @brief Autoindex를 설정합니다.
- *
  * @param value key value로 잘린 map에서 value값
  */
 void	HttpBase::setAutoIndex(const std::string& value){
@@ -72,11 +81,10 @@ void	HttpBase::setAutoIndex(const std::string& value){
 
 /**
  * @brief 에러페이지를 설정합니다.
- *
  * @param line 에러페이지의 status 코드와 경로가 있는 헌쥴울 전달해준다.
+ * @note 거꾸로 탐색합니다. 뒷쪽에 에러페이지는 하나만 에러코드는 여러개 올 수 있습니다.
  */
 void	HttpBase::setErrorPage(const std::string& line){
-	//거꾸로 탐색합니다. 뒷쪽에 에러페이지는 하나만 에러코드는 여러개 올 수 있습니다.
 	int i;
 	for (i = line.size() - 1;i  > 0; i--){
 		if (line[i] == ' ')
@@ -84,7 +92,6 @@ void	HttpBase::setErrorPage(const std::string& line){
 	}
 	if (i == 0)
 		throw(std::runtime_error("ERROR_PAGE SETING ERROR!!"));
-	// root_ = line.substr(i + 1);
 	splitAndStore(error_code_,  line.substr(0, i), ' ');
 	error_page_ = line.substr(i+1);
 }
