@@ -80,10 +80,11 @@ void  Kserver::startWorking(){
 /**
  * @brief socket(PF_INET, SOCK_STREAM, 0) :서버 소켓을 만듭니다.
  * @exception invalid_argument 포트가 틀린경우
+ *
  */
 void  Kserver::sockInit(){
 	if (port_ == -1)
-		throw(std::invalid_argument("Port Num is not vaild"));
+		throw(std::invalid_argument("Port Num is not valid"));
 	serv_sockfd_ = socket(PF_INET, SOCK_STREAM, 0);
 	if (serv_sockfd_ == -1)
 		throw(std::runtime_error("SOCK() ERROR"));
@@ -122,23 +123,34 @@ void  Kserver::handleEvents(){
 	struct kevent *cur_event;
 	for(int i=0;i < event_list_size_;i++){
 		cur_event = &event_list_[i];
-		if (cur_event->filter ==  EVFILT_READ){
-			if ((int)cur_event->ident == serv_sockfd_)
-				registerNewClnt();
-			else//client-socket
-				sockReadable(cur_event);
-		}
+		if (cur_event->filter ==  EVFILT_READ)
+			handleReadables(cur_event);
 		else if (cur_event->filter == EVFILT_WRITE)
-			sockWriterable(cur_event);//ONLY CLIENT
-		else{
-			std:: cout << "????????" <<  cur_event->filter << "\n";
+			handleWritables(cur_event);
+		else { //TODO: 제출 때 삭제
+			std::cout << "????????" <<  cur_event->filter << "\n";
 			throw(std::runtime_error("THAT'S IMPOSSIBLE THIS IS CODE ERROR!!"));
 		}
 	}
 }
 
+void Kserver::handleReadables(struct kevent* cur_event){
+  int ident = cur_event->ident;
+
+  if (ident == serv_sockfd_)
+		registerNewClnt();
+	else if (isClient(ident)){
+			parseHttpRequest();//http 파싱을 시작하는 함수
+			//TODO : HTTP error page 만드는 시점 정하기
+	}else if (isCgi(ident)){
+	//TODO: Echo Server 만들고 로직 짜기.
+	}
+  else
+    throw(std::runtime_error("ident Error"));
+}
+
 /**
- * @brief 새로운 클라이언트를 받았다고 생각한 함수 클라이언트 소켓을 accept 해주고, noblocking으로 만든 후, kqueue 이벤트에 read,write 모두 등록해줍니다.
+ * @brief 새로운 클라이언트를 받았다고 생각한 함수 클라이언트 소켓을 accept 해주고, nonblocking으로 만든 후, kqueue 이벤트에 read,write 모두 등록해줍니다.
  * 추가적으로 클라이언트 저장소에 빈 문자열로 저장해줍니다.
  *
  */
@@ -154,25 +166,18 @@ void  Kserver::registerNewClnt(){
 	clnt_store_[clnt_sockfd_] = "";
 }
 
-/**
- * @brief client socket is in a readable state
- *
- * @param cur_event 클라이언트 소켓에 해당되는 발생한 이벤트 구조체
- */
-void  Kserver::sockReadable(struct kevent *cur_event){
-	if (clnt_store_.find(cur_event->ident) == clnt_store_.end()){
-		std::cout << "Already disconnected\n";
-		return ;
-	}
-	int rlen = read(cur_event->ident ,buff_, BUFF_SIZE);
-	if (rlen == -1)
+void  Kserver::parseHttpRequest(struct kevent *cur_event){
+	int rlen = read(cur_event->ident, buff_, BUFF_SIZE);
+
+	if (rlen == -1)//생각해볼 거리: Server Error 505 page return
 		throw(std::runtime_error("READ() ERROR!! IN CLNT_SOCK"));
-	if (rlen == 0){
+	if (rlen == 0){//client측에서 shutdown할 경우 생각해보기
 		std::cout << "clnt shoot eof\n";
 		disconnectClient(cur_event->ident);
 	}
 	else{
 		buff_[rlen] = '\0';
+	 	clnt_store_[cur_event->ident].ParseMessage(buff_);
 		clnt_store_[cur_event->ident] += buff_;
 		std::cout << "FROM CLIENT NUM " << cur_event->ident << ": " << clnt_store_[cur_event->ident] << "\n";
 	}
@@ -183,11 +188,11 @@ void  Kserver::sockReadable(struct kevent *cur_event){
  *
  * @param cur_event 클라이언트 소켓에 해당되는 발생한 이벤트 구조체
  */
-void  Kserver::sockWriterable(struct kevent *cur_event){
+void  Kserver::sockWriteable(struct kevent *cur_event){
 	if (clnt_store_.find(cur_event->ident) != clnt_store_.end()){
 		if (clnt_store_[cur_event->ident] != ""){
 				int n = write(cur_event->ident, clnt_store_[cur_event->ident].c_str(),clnt_store_[cur_event->ident].size());
-				std::cout << "Writerable\n";
+				std::cout << "Writeable\n";
 				if (n == -1){
 						std::cerr << "client write error!" << "\n";
 						disconnectClient(cur_event->ident);
@@ -204,7 +209,7 @@ void  Kserver::sockWriterable(struct kevent *cur_event){
  * @param clnt_fd 연결을 끊을 클라이언트 fd
  */
 void  Kserver::disconnectClient(int clnt_fd){
-	std::cout << "CLINET DISCONNECTED:: " << clnt_fd << "\n";
+	std::cout << "CLIENT DISCONNECTED:: " << clnt_fd << "\n";
 	// kqueue_.ChangeEvent(clnt_fd, EVFILT_READ, EV_DELETE | EV_DISABLE, NULL);
 	// kqueue_.ChangeEvent(clnt_fd,EVFILT_WRITE, EV_DELETE | EV_DISABLE, NULL);
 	close(clnt_fd);

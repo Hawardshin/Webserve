@@ -1,8 +1,8 @@
 #ifndef SERVBLOCK_HPP
 # define SERVBLOCK_HPP
-# include "LocBlock.hpp"
-# include "IBlock.hpp"
-# include "HttpBase.hpp"
+# include "../LocationBlock/LocBlock.hpp"
+# include "../interface/IBlock.hpp"
+# include "../httpBlock/HttpBase.hpp"
 /**
  * @brief Server Block
  * location block을 담고있다.
@@ -32,7 +32,7 @@ public:
 	const int& getListen()const;
 
 	/*실제 사용할 경로를 찾아줄 getter*/
-	std::string getConbineUploadStorePath()const;
+	std::string getCombineUploadStorePath()const;
 
 	void	refineAll();
 	LocBlock	findLocBlock(std::string path);

@@ -1,7 +1,6 @@
 #include "Kserver.hpp"
 
-Kqueue::Kqueue(){}
-Kqueue::~Kqueue() { close(kqueue_fd_); }
+
 
 /**
  * @brief kserver 생성자(char* Port)
@@ -80,6 +79,7 @@ void  Kserver::startWorking(){
 /**
  * @brief socket(PF_INET, SOCK_STREAM, 0) :서버 소켓을 만듭니다.
  * @exception invalid_argument 포트가 틀린경우
+ *
  */
 void  Kserver::sockInit(){
 	if (port_ == -1)
