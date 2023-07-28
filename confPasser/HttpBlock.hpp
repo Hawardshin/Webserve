@@ -1,7 +1,7 @@
 #ifndef HTTPBLOCK_HPP
 # define HTTPBLOCK_HPP
-# include "../serverBlock/ServBlock.hpp"
-# include "../interface/IBlock.hpp"
+# include "ServBlock.hpp"
+# include "IBlock.hpp"
 # include "HttpBase.hpp"
 /**
  * @brief HTTP block의 정보를 담고있는 블록. 내부에 서버 블록들을 가지고 있다.

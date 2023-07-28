@@ -1,7 +1,7 @@
 #ifndef CONFPARSER_HPP
 # define CONFPARSER_HPP
-# include "./httpBlock/HttpBlock.hpp"
-# include "./interface/IBlock.hpp"
+# include "HttpBlock.hpp"
+# include "IBlock.hpp"
 /**
  * @brief 루트에 해당하는 클래스라고 보면 됩니다.
  * @details 사용할 지시어가 올바른 위치에 있지 않는 것에 대한 에러는 처리하지 않습니다.

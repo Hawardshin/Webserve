@@ -1,5 +1,5 @@
 # include "ParseTool.hpp"
-# include "../otherBlock/OtherBlock.hpp"
+# include "OtherBlock.hpp"
 /**
  * @brief 어떤 블록인지 리턴해주는 함수
  *
@@ -182,3 +182,6 @@ int stringToInt(const std::string &num){
 	checkOverFlow(ret);
 	return ret;
 }
+
+
+
